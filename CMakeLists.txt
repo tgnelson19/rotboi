@@ -3,7 +3,7 @@ project(rotboi)
 set(CMAKE_CXX_STANDARD 11)
 set(EXECUTABLE_NAME "rotboi")
 
-add_executable(${EXECUTABLE_NAME} main.cpp)
+add_executable(${EXECUTABLE_NAME} main.cpp classes/Entity.cpp classes/Entity.h classes/Character.cpp classes/Character.h classes/Arrow.cpp classes/Arrow.h classes/Enemy.cpp classes/Enemy.h)
 
 # Detect and add SFML
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
