@@ -25,7 +25,6 @@ public:
         if (dx == -1 && dy == -1){ angle = 225 ;}
         if (dx == 0 && dy == -1){ angle = 270 ;}
         if (dx == 1 && dy == -1){ angle = 315 ;}
-        speed = 10;
 
         if (isMoving){
             x -= speed*cos(dtr * angle);

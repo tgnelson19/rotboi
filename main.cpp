@@ -177,15 +177,15 @@ int main(){
 
                 if (c->isShooting){
                     if (c->shot2) {
-                        if (mousePos.at(0) > std::abs(mousePos.at(1))){ c->sprite = cRS2; c->x = cRS2.getPosition().x;}
-                        else if (std::abs(mousePos.at(0)) > std::abs(mousePos.at(1))) {c->sprite = cLS2; c->x = cLS2.getPosition().x;}
+                        if (mousePos.at(0) > std::abs(mousePos.at(1))){ c->sprite = cRS2; c->x = cRS2.getPosition().x; c->lastDirection = 'R';}
+                        else if (std::abs(mousePos.at(0)) > std::abs(mousePos.at(1))) {c->sprite = cLS2; c->x = cLS2.getPosition().x; c->lastDirection = 'L';}
                         else if (mousePos.at(1) > 0){c->sprite = cFS2; c->x = cFS2.getPosition().x;}
                         else {c->sprite = cBS2; c->x = cBS2.getPosition().x;}
                     } else {
                         if (mousePos.at(0) > std::abs(mousePos.at(1))){ c->sprite = cRS1; c->x = cRS1.getPosition().x;}
                         else if (std::abs(mousePos.at(0)) > std::abs(mousePos.at(1))){ c->sprite = cLS1; c->x = cLS1.getPosition().x;}
-                        else if (mousePos.at(1) > 0){c->sprite = cFS1; c->x = cFS1.getPosition().x;}
-                        else {c->sprite = cBS1; c->x = cBS1.getPosition().x;}
+                        else if (mousePos.at(1) > 0){c->sprite = cFS1; c->x = cFS1.getPosition().x; c->lastDirection = 'D';}
+                        else {c->sprite = cBS1; c->x = cBS1.getPosition().x; c->lastDirection = 'U';}
                     }
                 } else if (b->isMoving && !c->isShooting) {
                     if (c->walk2) {
@@ -245,7 +245,12 @@ int main(){
 
                 ///Draw Logic
 
-                for (auto i:entities) {i->draw(window);}
+                for (auto i:entities) {
+                    if (i->name == "arrow"){
+                        i->pDX = b->speed*b->dx; i->pDY = b->speed*b->dy;
+                    }
+                    i->draw(window);
+                }
                 window.display();
 
 

@@ -17,6 +17,7 @@ public:
     float damage;
     bool backwards;
 
+
     Arrow() { name = "arrow"; backwards = false;}
 
     void update() {
@@ -29,6 +30,8 @@ public:
             x += shotSpeed * cos(dtr * angle);
             y += shotSpeed * sin(dtr * angle);
         }
+
+        x -= pDX; y+= pDY;
 
         if (x > W || x < 0 || y > H || y < 0) {
             isAlive = false; // If it hits a wall, kills the bullet

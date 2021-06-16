@@ -34,13 +34,13 @@ public:
         name = "character";
         isAlive = true;
         walkDelay = 0.2;
-        shotDelay = 0.35;
+        shotDelay = 0.05;
         isShooting = false;
         canShoot = false;
         shot2 = false;
 
         damage = 1;
-        shotSpeed = 20;
+        shotSpeed = 13;
 
     }
 
