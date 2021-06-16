@@ -6,6 +6,7 @@
 #define ROTBOI_ARROW_H
 
 #include "Entity.h"
+#include "Character.h"
 
 
 class Arrow : public Entity{
@@ -14,12 +15,20 @@ public:
 
     float shotSpeed;
     float damage;
+    bool backwards;
 
-    Arrow() { name = "arrow"; }
+    Arrow() { name = "arrow"; backwards = false;}
 
     void update() {
-        x += shotSpeed * cos(dtr*angle);
-        y -= shotSpeed * sin(dtr*angle);
+        sprite.setRotation(angle);
+
+        if (backwards) {
+            x -= shotSpeed * cos(dtr * angle);
+            y -= shotSpeed * sin(dtr * angle);
+        } else {
+            x += shotSpeed * cos(dtr * angle);
+            y += shotSpeed * sin(dtr * angle);
+        }
 
         if (x > W || x < 0 || y > H || y < 0) {
             isAlive = false; // If it hits a wall, kills the bullet
