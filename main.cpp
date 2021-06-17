@@ -257,8 +257,6 @@ int main(){
                     entities.push_back(e);
                 }
 
-
-
                 for (auto p:entities) {
                     for (auto q:entities) {
                         if (p->name == "arrow"){

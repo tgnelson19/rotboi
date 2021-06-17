@@ -15,9 +15,10 @@ public:
 
     float shotSpeed;
     bool backwards;
+    float range;
 
 
-    Arrow() { name = "arrow"; backwards = false; damage = 3;}
+    Arrow() { name = "arrow"; backwards = false; damage = 3; range = 3;}
 
     void update() {
         sprite.setRotation(angle);
@@ -38,6 +39,11 @@ public:
 
         if (x > W || x < 0 || y > H || y < 0) {
             isAlive = false; // If it hits a wall, kills the bullet
+        }
+
+        range -= 0.1;
+        if (range < 0) {
+            isAlive = false;
         }
     }
 
