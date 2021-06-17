@@ -15,11 +15,11 @@ public:
     char shotDirection;
     bool canShoot;
     float shotTimer;
-    float shotDelay;
+    float dexterity;
     bool shot2;
     int goldCount;
 
-    float damage;
+    float attack;
     float shotSpeed;
     float range;
 
@@ -36,12 +36,14 @@ public:
         name = "character";
         isAlive = true;
         walkDelay = 0.2;
-        shotDelay = 0.05;
+
         isShooting = false;
         canShoot = false;
         shot2 = false;
 
-        damage = 1;
+
+        dexterity = 0.05;
+        attack = 1;
         shotSpeed = 10;
         range = 5;
 
@@ -56,9 +58,9 @@ public:
         walkTimer += walkTime;
         shotTimer += shootTime;
 
-        if (shotTimer > shotDelay){
+        if (shotTimer > dexterity){
             canShoot = true;
-        } else if (shotTimer > shotDelay/2){
+        } else if (shotTimer > dexterity / 2){
             shot2 = false;
         }
 

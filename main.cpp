@@ -156,51 +156,19 @@ int main(){
     c->settings(cFNW, 600, 375, 0);
     entities.push_back(c);
 
-    sf::Text gold;
-    gold.setString("0");
-    gold.setCharacterSize(30);
-    gold.setFillColor(sf::Color::White);
-    gold.setFont(font);
-    gold.setPosition(1100, 15);
-
     Entity *goldenEntity = new Entity();
     goldIcon.setScale(0.75, 0.75);
     goldenEntity->settings(goldIcon, 1050, 10, 0);
     entities.push_back(goldenEntity);
 
-    sf::Text startText;
-    startText.setString("Welcome to ROTBOI!");
-    startText.setFont(font);
-    startText.setPosition(550, 200);
-    startText.setCharacterSize(50);
-    startText.setFillColor(sf::Color::Black);
+    sf::Text gold("0", font, 30); gold.setFillColor(sf::Color::White); gold.setPosition(1100, 15);
+    sf::Text startText("Welcome to ROTBOI!", font, 50); startText.setFillColor(sf::Color::Black); startText.setPosition(550, 200);
+    sf::Text pauseHelp("Pause with the Escape key | Unpause with the Tab key", font, 25); pauseHelp.setFillColor(sf::Color::Black); pauseHelp.setPosition(460, 700);
+    sf::Text pause("Paused | Unpause with the Tab key", font, 50); pause.setFillColor(sf::Color::Black); pause.setPosition(400, 200);
+    sf::Text playButtonText("Play", font, 50); playButtonText.setFillColor(sf::Color::Black); playButtonText.setPosition(700, 475);
 
-    sf::Text pauseHelp;
-    pauseHelp.setString("Pause with the Escape key | Unpause with the Tab key");
-    pauseHelp.setFont(font);
-    pauseHelp.setPosition(460, 700);
-    pauseHelp.setCharacterSize(25);
-    pauseHelp.setFillColor(sf::Color::Black);
-
-    sf::Text pause;
-    pause.setString("Paused | Unpause with the Tab key");
-    pause.setFont(font);
-    pause.setPosition(400, 200);
-    pause.setCharacterSize(50);
-    pause.setFillColor(sf::Color::Black);
-
-    sf::Text playButtonText;
-    playButtonText.setString("Play");
-    playButtonText.setFont(font);
-    playButtonText.setPosition(700, 475);
-    playButtonText.setCharacterSize(50);
-    playButtonText.setFillColor(sf::Color::Black);
-
-    sf::RectangleShape openingButton;
-    openingButton.setSize(sf::Vector2f(400.f, 200.f));
-    openingButton.setPosition(550, 400);
-    openingButton.setFillColor(sf::Color::Blue);
-    openingButton.setOutlineColor(sf::Color::Cyan);
+    sf::RectangleShape openingButton(sf::Vector2f(400.f, 200.f));
+    openingButton.setPosition(550, 400); openingButton.setFillColor(sf::Color::Blue); openingButton.setOutlineColor(sf::Color::Cyan);
 
     while (window.isOpen()) {
         switch (state){
@@ -274,7 +242,7 @@ int main(){
                 if (sf::Mouse::isButtonPressed(mouse.Left)){
                     if (c->canShoot){
                         Arrow *a = new Arrow();
-                        a->shotSpeed = c->shotSpeed; a->damage = c->damage; a->range = c->range;
+                        a->shotSpeed = c->shotSpeed; a->damage = c->attack; a->range = c->range;
                         sf::Vector2i mvec = sf::Mouse::getPosition(window); ///Mouse position in vector form
                         mousePos.at(0) = mvec.x - c->x; ///Mouse position relative to the character
                         mousePos.at(1) = mvec.y - c->y - 25;
@@ -340,9 +308,7 @@ int main(){
                 goldenEntity->draw(window); c->draw(window);
                 window.draw(gold);
 
-
                 window.display();
-
 
                 break; }
 
