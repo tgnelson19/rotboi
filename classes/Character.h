@@ -17,6 +17,7 @@ public:
     float shotTimer;
     float shotDelay;
     bool shot2;
+    int goldCount;
 
     float damage;
     float shotSpeed;

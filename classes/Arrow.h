@@ -14,11 +14,10 @@ class Arrow : public Entity{
 public:
 
     float shotSpeed;
-    float damage;
     bool backwards;
 
 
-    Arrow() { name = "arrow"; backwards = false;}
+    Arrow() { name = "arrow"; backwards = false; damage = 3;}
 
     void update() {
         sprite.setRotation(angle);

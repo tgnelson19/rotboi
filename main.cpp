@@ -127,7 +127,7 @@ int main(){
         return EXIT_FAILURE;
     }
 
-    sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi);
+    sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi), goldIcon(GoldTexture);
 
     enum states {STARTSCREEN, GAMEPLAY, PAUSE}; states state = GAMEPLAY;
 
@@ -140,6 +140,12 @@ int main(){
     sf::Mouse mouse;
     std::vector<float> mousePos = {0, 0};
 
+    sf::Font font;
+
+    if (!font.loadFromFile("fonts/Oswald-Bold.ttf")) { /// Free for commercial use from fontsquirrel.com
+        return EXIT_FAILURE;
+    }
+
     Background *b = new Background();
     map.scale(60,60);
     b->settings(map, -40000, -40000, 0);
@@ -149,6 +155,18 @@ int main(){
     Character *c = new Character();
     c->settings(cFNW, 600, 375, 0);
     entities.push_back(c);
+
+    sf::Text gold;
+    gold.setString("0");
+    gold.setCharacterSize(30);
+    gold.setFillColor(sf::Color::White);
+    gold.setFont(font);
+    gold.setPosition(1100, 15);
+
+    Entity *goldenEntity = new Entity();
+    goldIcon.setScale(0.75, 0.75);
+    goldenEntity->settings(goldIcon, 1050, 10, 0);
+    entities.push_back(goldenEntity);
 
     while (window.isOpen()) {
         switch (state){
@@ -248,7 +266,9 @@ int main(){
                                 sf::FloatRect aBox = p->sprite.getGlobalBounds();
                                 sf::FloatRect eBox = q->sprite.getGlobalBounds();
                                 if (aBox.intersects(eBox)){
-                                    q->isAlive = false;
+                                    q->health -= p->damage;
+                                    p->isAlive = false;
+                                    c->goldCount += 1;
                                 }
                             }
                         }
@@ -261,7 +281,7 @@ int main(){
 
 
 
-
+                gold.setString(std::to_string(c->goldCount));
 
                 for (auto i = entities.begin(); i != entities.end();) {
                     Entity *e = *i; //*i is an Entity pointer, using * on an iterator returns the element from the list
@@ -278,6 +298,11 @@ int main(){
                     }
                     i->draw(window);
                 }
+
+                goldenEntity->draw(window); c->draw(window);
+                window.draw(gold);
+
+
                 window.display();
 
 

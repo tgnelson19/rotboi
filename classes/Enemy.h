@@ -13,7 +13,7 @@ public:
     char shotDirection;
     float dx, dy;
 
-    Enemy(){ name = "enemy"; isAlive = true; speed = 2;}
+    Enemy(){ name = "enemy"; isAlive = true; speed = 2; health = 3;}
 
     void update() {
 
@@ -32,6 +32,10 @@ public:
         }
 
         x -= pDX; y+= pDY;
+
+        if (health < 1) {
+            isAlive = false;
+        }
 
     }
 

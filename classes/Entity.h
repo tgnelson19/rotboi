@@ -16,6 +16,8 @@ class Entity {
 public:
     float x, y; /// Position on the screen
     float pDX, pDY;
+    float health;
+    float damage;
     float speed, angle; /// Speed of an entity will be based off of POLAR coordinate system, not cartesian
     bool isAlive; /// Determines if entity is alive
     std::string name; /// Determines which entity it is
