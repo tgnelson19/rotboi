@@ -12,6 +12,8 @@
 
 int main(){
 
+    srand(time(0));
+
     sf::Texture SArcherSpriteSheet;
 
     if (!SArcherSpriteSheet.loadFromFile("images/SlimeArcherSpriteSheet.png")) { /// Created by IExisted
@@ -121,7 +123,7 @@ int main(){
         return EXIT_FAILURE;
     }
 
-    sf::Sprite map(bg), arrowSprite(arrowTexture);
+    sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi);
 
     enum states {STARTSCREEN, GAMEPLAY, PAUSE}; states state = GAMEPLAY;
 
@@ -222,13 +224,34 @@ int main(){
                             arrowSprite.setScale(0.2, 0.2);
                             a->settings(arrowSprite, 620, 400, (atan(mousePos.at(1) / mousePos.at(0)) * 57.29));
                         }
-                        entities.push_back(a);
-                        c->canShoot = false;
-                        c->shotTimer = 0;
-                        c->shot2 = true;
+                        entities.push_back(a); c->canShoot = false; c->shotTimer = 0; c->shot2 = true;
                     }
                     c->isShooting = true;
                 }
+
+                if (rand() % 25 == 0){
+                    Enemy *e = new Enemy();
+                    e->settings(crystalEnemy, rand() % 1500, rand() % 800, 0);
+                    entities.push_back(e);
+                }
+
+
+
+                for (auto p:entities) {
+                    for (auto q:entities) {
+                        if (p->name == "arrow"){
+                            if (q->name == "enemy"){
+                                sf::FloatRect aBox = p->sprite.getGlobalBounds();
+                                sf::FloatRect eBox = q->sprite.getGlobalBounds();
+                                if (aBox.intersects(eBox)){
+                                    q->isAlive = false;
+                                }
+                            }
+                        }
+                    }
+                }
+
+
 
 
 
@@ -246,7 +269,7 @@ int main(){
                 ///Draw Logic
 
                 for (auto i:entities) {
-                    if (i->name == "arrow"){
+                    if (i->name == "arrow" || i->name == "enemy"){
                         i->pDX = b->speed*b->dx; i->pDY = b->speed*b->dy;
                     }
                     i->draw(window);

@@ -31,7 +31,11 @@ public:
             y += shotSpeed * sin(dtr * angle);
         }
 
-        x -= pDX; y+= pDY;
+        if (pDX != 0 && pDY != 0){
+            pDX /= sqrt(2); pDY /= sqrt(2);
+        }
+
+        x-= pDX; y+= pDY;
 
         if (x > W || x < 0 || y > H || y < 0) {
             isAlive = false; // If it hits a wall, kills the bullet
