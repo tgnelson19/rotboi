@@ -18,7 +18,7 @@ public:
     float range;
 
 
-    Arrow() { name = "arrow"; backwards = false; damage = 3; range = 2.5;}
+    Arrow() { name = "arrow"; backwards = false; damage = 3; range = 3;}
 
     void update() {
         sprite.setRotation(angle);
@@ -41,7 +41,8 @@ public:
             isAlive = false; // If it hits a wall, kills the bullet
         }
 
-        range -= 0.1;
+        range -= 0.15;
+
         if (range < 0) {
             isAlive = false;
         }

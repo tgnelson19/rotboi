@@ -129,7 +129,7 @@ int main(){
 
     sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi), goldIcon(GoldTexture);
 
-    enum states {STARTSCREEN, GAMEPLAY, PAUSE}; states state = GAMEPLAY;
+    enum states {STARTSCREEN, GAMEPLAY, PAUSE}; states state = STARTSCREEN;
 
     sf::RenderWindow window(sf::VideoMode(1500, 800), "rotboi"); ///Main window initialized
 
@@ -168,16 +168,58 @@ int main(){
     goldenEntity->settings(goldIcon, 1050, 10, 0);
     entities.push_back(goldenEntity);
 
+    sf::Text startText;
+    startText.setString("Welcome to ROTBOI!");
+    startText.setFont(font);
+    startText.setPosition(550, 200);
+    startText.setCharacterSize(50);
+    startText.setFillColor(sf::Color::Black);
+
+    sf::Text pauseHelp;
+    pauseHelp.setString("Pause with the Escape key | Unpause with the Tab key");
+    pauseHelp.setFont(font);
+    pauseHelp.setPosition(460, 700);
+    pauseHelp.setCharacterSize(25);
+    pauseHelp.setFillColor(sf::Color::Black);
+
+    sf::Text pause;
+    pause.setString("Paused | Unpause with the Tab key");
+    pause.setFont(font);
+    pause.setPosition(400, 200);
+    pause.setCharacterSize(50);
+    pause.setFillColor(sf::Color::Black);
+
+    sf::Text playButtonText;
+    playButtonText.setString("Play");
+    playButtonText.setFont(font);
+    playButtonText.setPosition(700, 475);
+    playButtonText.setCharacterSize(50);
+    playButtonText.setFillColor(sf::Color::Black);
+
+    sf::RectangleShape openingButton;
+    openingButton.setSize(sf::Vector2f(400.f, 200.f));
+    openingButton.setPosition(550, 400);
+    openingButton.setFillColor(sf::Color::Blue);
+    openingButton.setOutlineColor(sf::Color::Cyan);
+
     while (window.isOpen()) {
         switch (state){
             case STARTSCREEN: {
 
                 sf::Event move{};
-                while (window.pollEvent(move)) {
-                    if (move.type == sf::Event::Closed) {
-                        window.close(); /// Closes window when window is closed
-                    }
+                while (window.pollEvent(move)) { if (move.type == sf::Event::Closed) { window.close(); } }
+
+                if (sf::Mouse::isButtonPressed(mouse.Left)) {
+                    sf::Vector2i mvec = sf::Mouse::getPosition(window);
+                    if( mvec.x > 550 && mvec.x < 950){ if(mvec.y > 400 && mvec.y < 600) { state = GAMEPLAY;}}
                 }
+
+                window.clear(sf::Color::Cyan);
+                window.draw(openingButton);
+                window.draw(startText);
+                window.draw(playButtonText);
+                window.draw(pauseHelp);
+                window.display();
 
 
             break; }
@@ -185,11 +227,9 @@ int main(){
             case GAMEPLAY: {
 
                 sf::Event move{};
-                while (window.pollEvent(move)) {
-                    if (move.type == sf::Event::Closed) {
-                        window.close(); /// Closes window when window is closed
-                    }
-                }
+                while (window.pollEvent(move)) { if (move.type == sf::Event::Closed) { window.close(); } }
+
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {state = PAUSE; }
 
                 if (!b->isMoving){ c->walk2 = true;}
 
@@ -234,7 +274,7 @@ int main(){
                 if (sf::Mouse::isButtonPressed(mouse.Left)){
                     if (c->canShoot){
                         Arrow *a = new Arrow();
-                        a->shotSpeed = c->shotSpeed; a->damage = c->damage;
+                        a->shotSpeed = c->shotSpeed; a->damage = c->damage; a->range = c->range;
                         sf::Vector2i mvec = sf::Mouse::getPosition(window); ///Mouse position in vector form
                         mousePos.at(0) = mvec.x - c->x; ///Mouse position relative to the character
                         mousePos.at(1) = mvec.y - c->y - 25;
@@ -251,7 +291,7 @@ int main(){
                     c->isShooting = true;
                 }
 
-                if (rand() % 25 == 0){
+                if (rand() % 10 == 0){
                     Enemy *e = new Enemy();
                     e->settings(crystalEnemy, rand() % 1500, rand() % 800, 0);
                     entities.push_back(e);
@@ -309,11 +349,13 @@ int main(){
             case PAUSE: {
 
                 sf::Event move{};
-                while (window.pollEvent(move)) {
-                    if (move.type == sf::Event::Closed) {
-                        window.close(); /// Closes window when window is closed
-                    }
-                }
+                while (window.pollEvent(move)) { if (move.type == sf::Event::Closed) {window.close(); } }
+
+                window.clear(sf::Color::Cyan);
+                window.draw(pause);
+                window.display();
+
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) {state = GAMEPLAY; }
 
 
                 break;}

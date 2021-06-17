@@ -21,6 +21,7 @@ public:
 
     float damage;
     float shotSpeed;
+    float range;
 
     char lastDirection;
 
@@ -41,7 +42,8 @@ public:
         shot2 = false;
 
         damage = 1;
-        shotSpeed = 13;
+        shotSpeed = 10;
+        range = 5;
 
     }
 
