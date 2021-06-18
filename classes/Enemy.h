@@ -12,8 +12,16 @@ public:
     bool isShooting;
     char shotDirection;
     float dx, dy;
+    sf::RectangleShape healthbar;
+    sf::RectangleShape hpbackground;
 
-    Enemy(){ name = "enemy"; isAlive = true; speed = 2; health = 3;}
+    Enemy(){
+        name = "enemy"; isAlive = true; speed = 2; health = 3; maxHealth = 3;
+        healthbar.setSize(sf::Vector2f(60.f, 6.f));
+        hpbackground.setSize(sf::Vector2f(60.f, 6.f));
+        healthbar.setFillColor(sf::Color::Green);
+        hpbackground.setFillColor(sf::Color::Red);
+    }
 
     void update() {
 
@@ -36,6 +44,19 @@ public:
         if (health < 1) {
             isAlive = false;
         }
+
+        healthbar.setSize(sf::Vector2f(60*(health/maxHealth), 6));
+
+    }
+
+    void draw(sf::RenderWindow &app){
+
+        sprite.setPosition(x,y);
+        healthbar.setPosition(x + 20, y + 90);
+        hpbackground.setPosition(x + 20, y + 90);
+        app.draw(hpbackground);
+        app.draw(healthbar);
+        app.draw(sprite);
 
     }
 

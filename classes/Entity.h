@@ -17,6 +17,7 @@ public:
     float x, y; /// Position on the screen
     float pDX, pDY;
     float health;
+    float maxHealth;
     float damage;
     float speed, angle; /// Speed of an entity will be based off of POLAR coordinate system, not cartesian
     bool isAlive; /// Determines if entity is alive
@@ -29,7 +30,7 @@ public:
 
     virtual void update() {}; /// Used for future derived classes
 
-    void draw(sf::RenderWindow &app){ /// Draws current entity to the screen
+    virtual void draw(sf::RenderWindow &app){ /// Draws current entity to the screen
         sprite.setPosition(x,y);
         app.draw(sprite);
     }

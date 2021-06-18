@@ -259,7 +259,7 @@ int main(){
                     c->isShooting = true;
                 }
 
-                if (rand() % 10 == 0){
+                if (rand() % 25 == 0){
                     Enemy *e = new Enemy();
                     e->settings(crystalEnemy, rand() % 1500, rand() % 800, 0);
                     entities.push_back(e);
