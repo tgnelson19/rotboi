@@ -16,7 +16,7 @@ public:
     sf::RectangleShape hpbackground;
 
     Enemy(){
-        name = "enemy"; isAlive = true; speed = 2; health = 3; maxHealth = 3;
+        name = "enemy"; isAlive = true; speed = 2; health = 1000; maxHealth = 1000;
         healthbar.setSize(sf::Vector2f(60.f, 6.f));
         hpbackground.setSize(sf::Vector2f(60.f, 6.f));
         miniEnemy.setSize(sf::Vector2f(25.f, 25.f));

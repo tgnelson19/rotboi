@@ -18,7 +18,7 @@ public:
     float range;
 
 
-    Arrow() { name = "arrow"; backwards = false; damage = 3; range = 3;}
+    Arrow() { name = "arrow"; backwards = false; minDamage = 100; maxDamage = 115; range = 3;}
 
     void update() {
         sprite.setRotation(angle);

@@ -165,6 +165,16 @@ int main(){
     sf::Text playButtonText("Play", font, 50); playButtonText.setFillColor(sf::Color::Black); playButtonText.setPosition(700, 475);
     sf::Text dexterityUpgradeText("Dexterity", font, 50); dexterityUpgradeText.setFillColor(sf::Color::Yellow); dexterityUpgradeText.setPosition(100,100);
     sf::Text attackUpgradeText("Attack", font, 50); attackUpgradeText.setFillColor((sf::Color::Magenta)); attackUpgradeText.setPosition(100,200);
+    sf::Text attackOnBar("Attack", font, 20); attackOnBar.setFillColor((sf::Color::Magenta)); attackOnBar.setPosition(1220,310);
+    sf::Text dexterityOnBar("Dexterity", font, 20); dexterityOnBar.setFillColor((sf::Color::Yellow)); dexterityOnBar.setPosition(1220,340);
+    sf::Text damageOnBar("Damage", font, 20); damageOnBar.setFillColor((sf::Color::Black)); damageOnBar.setPosition(1220,370);
+    sf::Text critChanceOnBar("Crit Chance", font, 20); critChanceOnBar.setFillColor((sf::Color::Yellow)); critChanceOnBar.setPosition(1220,400);
+    sf::Text critDamageOnBar("Crit Damage", font, 20); critDamageOnBar.setFillColor((sf::Color::Red)); critDamageOnBar.setPosition(1220,430);
+    sf::Text attackText("0", font, 20); attackText.setFillColor((sf::Color::Magenta)); attackText.setPosition(1360,310);
+    sf::Text dexterityText("0", font, 20); dexterityText.setFillColor((sf::Color::Yellow)); dexterityText.setPosition(1360,340);
+    sf::Text damageText("0", font, 20); damageText.setFillColor((sf::Color::Black)); damageText.setPosition(1360,370);
+    sf::Text critChanceText("0", font, 20); critChanceText.setFillColor((sf::Color::Yellow)); critChanceText.setPosition(1360,400);
+    sf::Text critDamageText("0", font, 20); critDamageText.setFillColor((sf::Color::Red)); critDamageText.setPosition(1360,430);
 
     sf::RectangleShape upgradeBackground(sf::Vector2f(1400.f, 500.f));
     upgradeBackground.setPosition(50,66); upgradeBackground.setFillColor(sf::Color::Black); upgradeBackground.setOutlineColor(sf::Color::Blue);
@@ -174,6 +184,9 @@ int main(){
 
     sf::RectangleShape sidebar(sf::Vector2f(400.f, 800.f));
     sidebar.setPosition(1200,0); sidebar.setFillColor(sf::Color::Black);
+
+    sf::RectangleShape statsOnBar(sf::Vector2f(280, 170.f));
+    statsOnBar.setPosition(1210,300); statsOnBar.setFillColor(sf::Color::Cyan);
 
     sf::RectangleShape miniDude(sf::Vector2f(25.f, 25.f));
     miniDude.setFillColor(sf::Color::Yellow); miniDude.setPosition(475,475);
@@ -254,7 +267,7 @@ int main(){
                 if (sf::Mouse::isButtonPressed(mouse.Left)){
                     if (c->canShoot){
                         Arrow *a = new Arrow();
-                        a->shotSpeed = c->shotSpeed; a->damage = c->attack; a->range = c->range;
+                        a->shotSpeed = c->shotSpeed; a->minDamage = c->minDamage;a->maxDamage = c->maxDamage; a->range = c->range;
                         sf::Vector2i mvec = sf::Mouse::getPosition(window); ///Mouse position in vector form
                         mousePos.at(0) = mvec.x - c->x; ///Mouse position relative to the character
                         mousePos.at(1) = mvec.y - c->y - 25;
@@ -271,9 +284,9 @@ int main(){
                     c->isShooting = true;
                 }
 
-                if (rand() % 25 == 0){
+                if (rand() % 5 == 0){
                     Enemy *e = new Enemy();
-                    e->settings(crystalEnemy, rand() % 1500, rand() % 800, 0);
+                    e->settings(crystalEnemy, rand() % 4800 - 2400, rand() % 4800 - 2400, 0);
                     entities.push_back(e);
                 }
 
@@ -284,13 +297,20 @@ int main(){
                                 sf::FloatRect aBox = p->sprite.getGlobalBounds();
                                 sf::FloatRect eBox = q->sprite.getGlobalBounds();
                                 if (aBox.intersects(eBox)){
-                                    q->health -= p->damage;
-                                    p->isAlive = false;
-                                    c->goldCount += 1;
+                                    int damageNow = rand() % (p->maxDamage-p->minDamage) + p->maxDamage;
                                     MovingText *mov = new MovingText();
                                     mov->text.setPosition(q->x + 30, q->y - 10);
                                     mov->text.setFont(font); mov->text.setFillColor(sf::Color::Red);
-                                    mov->text.setString(std::to_string(p->damage)); mov->text.setCharacterSize(20);
+                                    mov->text.setCharacterSize(20);
+                                    if ((rand() % (100/c->critChance) == 0) || c->critChance == 100){
+                                        damageNow *= c->critDamage;
+                                        mov->text.setFillColor(sf::Color::Yellow);
+                                        mov->text.setCharacterSize(40);
+                                    }
+                                    q->health -= damageNow;
+                                    p->isAlive = false;
+                                    c->goldCount += 1;
+                                    mov->text.setString(std::to_string(damageNow));
                                     entities.push_back(mov);
                                 }
                             }
@@ -316,8 +336,21 @@ int main(){
                     i->draw(window);
                 }
 
+                attackText.setString(std::to_string(c->attack));
+                dexterityText.setString(std::to_string(c->dexterity));
+                damageText.setString(std::to_string(c->minDamage) + " - " + std::to_string(c->maxDamage));
+                critChanceText.setString(std::to_string(c->critChance));
+                critDamageText.setString(std::to_string(c->critDamage));
+
+
+
+
                 goldenEntity->draw(window); c->draw(window);
                 window.draw(gold); window.draw(sidebar);
+                window.draw(statsOnBar); window.draw(attackOnBar); window.draw(dexterityOnBar);
+                window.draw(damageOnBar); window.draw(critChanceOnBar); window.draw(critDamageOnBar);
+                window.draw(attackText); window.draw(dexterityText); window.draw(damageText);
+                window.draw(critChanceText); window.draw(critDamageText);
 
 
 
