@@ -9,6 +9,8 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+static int gold;
+
 class Character : public Entity{
 public:
     bool isShooting;
@@ -20,7 +22,7 @@ public:
     int goldCount;
 
 
-    double dexterity;
+    int dexterity;
     int attack;
     int critChance;
     int critDamage;
@@ -45,8 +47,7 @@ public:
         canShoot = false;
         shot2 = false;
 
-
-        dexterity = 0.2;
+        dexterity = 1;
         attack = 1;
         shotSpeed = 10;
         range = 5;
@@ -54,10 +55,8 @@ public:
         minDamage = 100;
         maxDamage = 115;
 
-        critChance = 100;
-        critDamage = 2;
-
-
+        critChance = 25;
+        critDamage = 100;
 
     }
 
@@ -84,6 +83,8 @@ public:
             }
             walkTimer = 0;
         }
+
+        goldCount = gold;
     }
 
 };

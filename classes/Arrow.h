@@ -17,7 +17,6 @@ public:
     bool backwards;
     float range;
 
-
     Arrow() { name = "arrow"; backwards = false; minDamage = 100; maxDamage = 115; range = 3;}
 
     void update() {

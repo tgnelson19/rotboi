@@ -6,6 +6,7 @@
 #define ROTBOI_ENEMY_H
 
 #include "Entity.h"
+#include "Character.h"
 
 class Enemy : public Entity{
 public:
@@ -15,6 +16,8 @@ public:
     sf::RectangleShape healthbar;
     sf::RectangleShape hpbackground;
 
+    int despawnDistance;
+
     Enemy(){
         name = "enemy"; isAlive = true; speed = 2; health = 1000; maxHealth = 1000;
         healthbar.setSize(sf::Vector2f(60.f, 6.f));
@@ -23,18 +26,30 @@ public:
         healthbar.setFillColor(sf::Color::Green);
         hpbackground.setFillColor(sf::Color::Red);
         miniEnemy.setFillColor(sf::Color::Red);
+        despawnDistance = 2400;
     }
 
     void update() {
 
-        if (x > 601){
-            angle = atan((y-375)/(x-600));
-            x -= speed*cos(angle);
-            y -= speed*sin(angle);
-        } else if (x < 599){
-            angle = atan((y-375)/(x-600));
-            x += speed*cos(angle);
-            y += speed*sin(angle);
+        if ( x > 0 && x < 1200){
+            if ( y > 0 && y < 800){
+                if (x > 601){
+                    angle = atan((y-375)/(x-600));
+                    x -= speed*cos(angle);
+                    y -= speed*sin(angle);
+                } else if (x < 599){
+                    angle = atan((y-375)/(x-600));
+                    x += speed*cos(angle);
+                    y += speed*sin(angle);
+                }
+            }
+        }
+
+        if ( (x < -despawnDistance) || (x > despawnDistance)) {
+            isAlive = false;
+        }
+        if ((y < -despawnDistance) || (y > despawnDistance)) {
+            isAlive = false;
         }
 
         if (pDX != 0 && pDY != 0){
@@ -45,6 +60,7 @@ public:
 
         if (health < 1) {
             isAlive = false;
+            gold += 5;
         }
 
         healthbar.setSize(sf::Vector2f(60*(health/maxHealth), 6));

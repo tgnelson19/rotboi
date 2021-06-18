@@ -284,7 +284,7 @@ int main(){
                     c->isShooting = true;
                 }
 
-                if (rand() % 5 == 0){
+                if (rand() % 25 == 0){
                     Enemy *e = new Enemy();
                     e->settings(crystalEnemy, rand() % 4800 - 2400, rand() % 4800 - 2400, 0);
                     entities.push_back(e);
@@ -303,13 +303,12 @@ int main(){
                                     mov->text.setFont(font); mov->text.setFillColor(sf::Color::Red);
                                     mov->text.setCharacterSize(20);
                                     if ((rand() % (100/c->critChance) == 0) || c->critChance == 100){
-                                        damageNow *= c->critDamage;
+                                        damageNow *= (c->critDamage / 100);
                                         mov->text.setFillColor(sf::Color::Yellow);
                                         mov->text.setCharacterSize(40);
                                     }
                                     q->health -= damageNow;
                                     p->isAlive = false;
-                                    c->goldCount += 1;
                                     mov->text.setString(std::to_string(damageNow));
                                     entities.push_back(mov);
                                 }
@@ -323,7 +322,10 @@ int main(){
                 for (auto i = entities.begin(); i != entities.end();) {
                     Entity *e = *i; //*i is an Entity pointer, using * on an iterator returns the element from the list
                     e->update(); // Uses polymorphism to call the proper update method
-                    if (!e->isAlive) { i = entities.erase(i); delete e; }
+                    if (!e->isAlive) {
+                        i = entities.erase(i); delete e;
+
+                    }
                     else i++; //Move iterator to the next element in the list
                 }
 
@@ -339,11 +341,8 @@ int main(){
                 attackText.setString(std::to_string(c->attack));
                 dexterityText.setString(std::to_string(c->dexterity));
                 damageText.setString(std::to_string(c->minDamage) + " - " + std::to_string(c->maxDamage));
-                critChanceText.setString(std::to_string(c->critChance));
-                critDamageText.setString(std::to_string(c->critDamage));
-
-
-
+                critChanceText.setString(std::to_string(c->critChance) + "%");
+                critDamageText.setString(std::to_string(c->critDamage) + "%");
 
                 goldenEntity->draw(window); c->draw(window);
                 window.draw(gold); window.draw(sidebar);
@@ -351,8 +350,6 @@ int main(){
                 window.draw(damageOnBar); window.draw(critChanceOnBar); window.draw(critDamageOnBar);
                 window.draw(attackText); window.draw(dexterityText); window.draw(damageText);
                 window.draw(critChanceText); window.draw(critDamageText);
-
-
 
                 window.setView(miniMap);
 
@@ -380,9 +377,6 @@ int main(){
                 while (window.pollEvent(move)) { if (move.type == sf::Event::Closed) {window.close(); } }
 
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) { state = GAMEPLAY; }
-
-
-
 
                 window.clear(sf::Color::Cyan);
 
