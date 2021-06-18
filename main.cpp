@@ -13,6 +13,7 @@
 #include "classes/Entity.h"
 #include "classes/Enemy.h"
 #include "classes/Background.h"
+#include "classes/MovingText.h"
 
 int main(){
 
@@ -164,11 +165,16 @@ int main(){
     sf::Text gold("0", font, 30); gold.setFillColor(sf::Color::White); gold.setPosition(1100, 15);
     sf::Text startText("Welcome to ROTBOI!", font, 50); startText.setFillColor(sf::Color::Black); startText.setPosition(550, 200);
     sf::Text pauseHelp("Pause with the Escape key | Unpause with the Tab key", font, 25); pauseHelp.setFillColor(sf::Color::Black); pauseHelp.setPosition(460, 700);
-    sf::Text pause("Paused | Unpause with the Tab key", font, 50); pause.setFillColor(sf::Color::Black); pause.setPosition(400, 200);
+    sf::Text pause("Paused | Unpause with the Tab key", font, 50); pause.setFillColor(sf::Color::Black); pause.setPosition(400, 700);
     sf::Text playButtonText("Play", font, 50); playButtonText.setFillColor(sf::Color::Black); playButtonText.setPosition(700, 475);
+    sf::Text dexterityUpgradeText("Dexterity", font, 50); dexterityUpgradeText.setFillColor(sf::Color::Yellow); dexterityUpgradeText.setPosition(100,100);
+    sf::Text attackUpgradeText("Attack", font, 50); attackUpgradeText.setFillColor((sf::Color::Magenta)); attackUpgradeText.setPosition(100,200);
+
+    sf::RectangleShape upgradeBackground(sf::Vector2f(1400.f, 500.f));
+    upgradeBackground.setPosition(50,66); upgradeBackground.setFillColor(sf::Color::Black); upgradeBackground.setOutlineColor(sf::Color::Blue);
 
     sf::RectangleShape openingButton(sf::Vector2f(400.f, 200.f));
-    openingButton.setPosition(550, 400); openingButton.setFillColor(sf::Color::Blue); openingButton.setOutlineColor(sf::Color::Cyan);
+    openingButton.setPosition(550, 400); openingButton.setFillColor(sf::Color::Blue); openingButton.setOutlineColor(sf::Color::Magenta);
 
     while (window.isOpen()) {
         switch (state){
@@ -275,17 +281,16 @@ int main(){
                                     q->health -= p->damage;
                                     p->isAlive = false;
                                     c->goldCount += 1;
+                                    MovingText *mov = new MovingText();
+                                    mov->text.setPosition(q->x + 30, q->y - 10);
+                                    mov->text.setFont(font); mov->text.setFillColor(sf::Color::Red);
+                                    mov->text.setString(std::to_string(p->damage)); mov->text.setCharacterSize(20);
+                                    entities.push_back(mov);
                                 }
                             }
                         }
                     }
                 }
-
-
-
-
-
-
 
                 gold.setString(std::to_string(c->goldCount));
 
@@ -299,7 +304,7 @@ int main(){
                 ///Draw Logic
 
                 for (auto i:entities) {
-                    if (i->name == "arrow" || i->name == "enemy"){
+                    if (i->name == "arrow" || i->name == "enemy" || i->name == "movingText"){
                         i->pDX = b->speed*b->dx; i->pDY = b->speed*b->dy;
                     }
                     i->draw(window);
@@ -317,12 +322,20 @@ int main(){
                 sf::Event move{};
                 while (window.pollEvent(move)) { if (move.type == sf::Event::Closed) {window.close(); } }
 
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) { state = GAMEPLAY; }
+
+
+
+
                 window.clear(sf::Color::Cyan);
+
+                goldenEntity->draw(window);
+                window.draw(gold);
+                window.draw(upgradeBackground);
+                window.draw(dexterityUpgradeText);
+                window.draw(attackUpgradeText);
                 window.draw(pause);
                 window.display();
-
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) {state = GAMEPLAY; }
-
 
                 break;}
 
