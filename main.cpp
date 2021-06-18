@@ -14,6 +14,7 @@
 #include "classes/Enemy.h"
 #include "classes/Background.h"
 #include "classes/MovingText.h"
+#include "classes/MovingBox.h"
 
 int main(){
 
@@ -107,14 +108,6 @@ int main(){
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
-    if (!Inventory.loadFromFile("images/Inventory.png")) { /// Created by Wildshadow Studios
-        std::cout << "Error: Failed to load file" << std::endl;
-        return EXIT_FAILURE;
-    }
-    if (!Stats.loadFromFile("images/Stats.png")) { /// Created by Deca Games
-        std::cout << "Error: Failed to load file" << std::endl;
-        return EXIT_FAILURE;
-    }
     if (!CrystalBoi.loadFromFile("images/Crystal_Crawler.png")) { /// Created by Deca Games
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
@@ -147,6 +140,10 @@ int main(){
         return EXIT_FAILURE;
     }
 
+    sf::View miniMap;
+
+    miniMap.setViewport(sf::FloatRect(0.805f, 0.008f, 0.19f, 0.35f));
+
     Background *b = new Background();
     map.scale(60,60);
     b->settings(map, -40000, -40000, 0);
@@ -175,6 +172,14 @@ int main(){
 
     sf::RectangleShape openingButton(sf::Vector2f(400.f, 200.f));
     openingButton.setPosition(550, 400); openingButton.setFillColor(sf::Color::Blue); openingButton.setOutlineColor(sf::Color::Magenta);
+
+    sf::RectangleShape sidebar(sf::Vector2f(400.f, 800.f));
+    sidebar.setPosition(1200,0); sidebar.setFillColor(sf::Color::Black);
+
+    sf::RectangleShape miniDude(sf::Vector2f(22.f, 25.f));
+    miniDude.setFillColor(sf::Color::Yellow); miniDude.setPosition(475,475);
+
+    map.scale(0.3333,0.3333);
 
     while (window.isOpen()) {
         switch (state){
@@ -311,7 +316,21 @@ int main(){
                 }
 
                 goldenEntity->draw(window); c->draw(window);
-                window.draw(gold);
+                window.draw(gold); window.draw(sidebar);
+
+
+
+                window.setView(miniMap);
+
+                map.setPosition(((b->x)/3) + 290, ((b->y)/3) + 355);
+
+                window.draw(map);
+
+                window.draw(miniDude);
+
+
+
+                window.setView(window.getDefaultView());
 
                 window.display();
 

@@ -8,8 +8,6 @@ add_executable(${EXECUTABLE_NAME} main.cpp classes/Entity.cpp classes/Entity.h c
 configure_file(images/SlimeArcherSpriteSheet.png images/SlimeArcherSpriteSheet.png COPYONLY)
 configure_file(images/World1.png images/World1.png COPYONLY)
 configure_file(images/Arrow.png images/Arrow.png COPYONLY)
-configure_file(images/Inventory.png images/Inventory.png COPYONLY)
-configure_file(images/Stats.png images/Stats.png COPYONLY)
 configure_file(images/Crystal_Crawler.png images/Crystal_Crawler.png COPYONLY)
 configure_file(fonts/Oswald-Bold.ttf fonts/Oswald-Bold.ttf COPYONLY)
 configure_file(images/gold.png images/gold.png COPYONLY)
