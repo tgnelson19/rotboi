@@ -14,7 +14,6 @@
 #include "classes/Enemy.h"
 #include "classes/Background.h"
 #include "classes/MovingText.h"
-#include "classes/MovingBox.h"
 
 int main(){
 
@@ -176,10 +175,12 @@ int main(){
     sf::RectangleShape sidebar(sf::Vector2f(400.f, 800.f));
     sidebar.setPosition(1200,0); sidebar.setFillColor(sf::Color::Black);
 
-    sf::RectangleShape miniDude(sf::Vector2f(22.f, 25.f));
+    sf::RectangleShape miniDude(sf::Vector2f(25.f, 25.f));
     miniDude.setFillColor(sf::Color::Yellow); miniDude.setPosition(475,475);
 
-    map.scale(0.3333,0.3333);
+    float mapscale = 1.0/3.0;
+
+    map.scale(mapscale,mapscale);
 
     while (window.isOpen()) {
         switch (state){
@@ -322,13 +323,17 @@ int main(){
 
                 window.setView(miniMap);
 
-                map.setPosition(((b->x)/3) + 290, ((b->y)/3) + 355);
+                map.setPosition(((b->x)/3) + 285, ((b->y)/3) + 353);
 
                 window.draw(map);
 
                 window.draw(miniDude);
 
-
+                for (auto i:entities) {
+                    if (i->name == "enemy"){
+                        window.draw(i->miniEnemy);
+                    }
+                }
 
                 window.setView(window.getDefaultView());
 

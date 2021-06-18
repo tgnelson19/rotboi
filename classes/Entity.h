@@ -23,6 +23,7 @@ public:
     bool isAlive; /// Determines if entity is alive
     std::string name; /// Determines which entity it is
     sf::Sprite sprite; /// Gives the entity a sprite
+    sf::RectangleShape miniEnemy;
 
     Entity() { isAlive = true; } /// Default Constructor
 

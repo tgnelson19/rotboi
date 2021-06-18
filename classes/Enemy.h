@@ -19,8 +19,10 @@ public:
         name = "enemy"; isAlive = true; speed = 2; health = 3; maxHealth = 3;
         healthbar.setSize(sf::Vector2f(60.f, 6.f));
         hpbackground.setSize(sf::Vector2f(60.f, 6.f));
+        miniEnemy.setSize(sf::Vector2f(25.f, 25.f));
         healthbar.setFillColor(sf::Color::Green);
         hpbackground.setFillColor(sf::Color::Red);
+        miniEnemy.setFillColor(sf::Color::Red);
     }
 
     void update() {
@@ -46,6 +48,8 @@ public:
         }
 
         healthbar.setSize(sf::Vector2f(60*(health/maxHealth), 6));
+
+        miniEnemy.setPosition((x/3) + 285,(y/3) + 353);
 
     }
 
