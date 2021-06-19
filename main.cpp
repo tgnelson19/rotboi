@@ -1,7 +1,5 @@
 ///Made by Tyler Nelson
 
-
-
 #include <SFML/Graphics.hpp>
 #include <ctime>
 #include <cstdlib>
