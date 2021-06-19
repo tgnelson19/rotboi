@@ -7,8 +7,8 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 
-const int W = 1500;
-const int H = 800;
+static float W = 1500;
+static float H = 800;
 
 const float dtr = 0.017453f;
 

@@ -124,7 +124,7 @@ int main(){
 
     enum states {STARTSCREEN, GAMEPLAY, PAUSE}; states state = STARTSCREEN;
 
-    sf::RenderWindow window(sf::VideoMode(1500, 800), "rotboi"); ///Main window initialized
+    sf::RenderWindow window(sf::VideoMode(W, H), "rotboi"); ///Main window initialized
 
     window.setFramerateLimit(60);
 
@@ -204,7 +204,7 @@ int main(){
 
                 if (sf::Mouse::isButtonPressed(mouse.Left)) {
                     sf::Vector2i mvec = sf::Mouse::getPosition(window);
-                    if( mvec.x > 550 && mvec.x < 950){ if(mvec.y > 400 && mvec.y < 600) { state = GAMEPLAY;}}
+                    if( mvec.x > (0.3666*window.getSize().x) && mvec.x < (0.63333*window.getSize().x)){ if(mvec.y > (0.5*window.getSize().y) && mvec.y < (0.75*window.getSize().y)) { state = GAMEPLAY;}}
                 }
 
                 window.clear(sf::Color::Cyan);
@@ -269,8 +269,8 @@ int main(){
                         Arrow *a = new Arrow();
                         a->shotSpeed = c->shotSpeed; a->minDamage = c->minDamage;a->maxDamage = c->maxDamage; a->range = c->range;
                         sf::Vector2i mvec = sf::Mouse::getPosition(window); ///Mouse position in vector form
-                        mousePos.at(0) = mvec.x - c->x; ///Mouse position relative to the character
-                        mousePos.at(1) = mvec.y - c->y - 25;
+                        mousePos.at(0) = mvec.x - (0.4*window.getSize().x); ///Mouse position relative to the character
+                        mousePos.at(1) = mvec.y - (0.46875*window.getSize().y) - 25;
                         if (mousePos.at(0) < 0) { ///If x is negative
                             arrowSprite.setScale(-0.2, -0.2); ///Flop the arrow on x and y axis
                             a->backwards = true;
@@ -303,7 +303,7 @@ int main(){
                                     mov->text.setFont(font); mov->text.setFillColor(sf::Color::Red);
                                     mov->text.setCharacterSize(20);
                                     if ((rand() % (100/c->critChance) == 0) || c->critChance == 100){
-                                        damageNow *= (c->critDamage / 100);
+                                        damageNow *= ((c->critDamage + 100) / 100);
                                         mov->text.setFillColor(sf::Color::Yellow);
                                         mov->text.setCharacterSize(40);
                                     }
@@ -342,7 +342,7 @@ int main(){
                 dexterityText.setString(std::to_string(c->dexterity));
                 damageText.setString(std::to_string(c->minDamage) + " - " + std::to_string(c->maxDamage));
                 critChanceText.setString(std::to_string(c->critChance) + "%");
-                critDamageText.setString(std::to_string(c->critDamage) + "%");
+                critDamageText.setString("+" + std::to_string(c->critDamage) + "%");
 
                 goldenEntity->draw(window); c->draw(window);
                 window.draw(gold); window.draw(sidebar);
