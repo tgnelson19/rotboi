@@ -12,7 +12,7 @@
 #include "classes/Enemy.h"
 #include "classes/Background.h"
 #include "classes/MovingText.h"
-
+ 
 int main(){
 
     srand(time(0));
@@ -173,6 +173,11 @@ int main(){
     sf::Text damageText("0", font, 20); damageText.setFillColor((sf::Color::Black)); damageText.setPosition(1360,370);
     sf::Text critChanceText("0", font, 20); critChanceText.setFillColor((sf::Color::Yellow)); critChanceText.setPosition(1360,400);
     sf::Text critDamageText("0", font, 20); critDamageText.setFillColor((sf::Color::Red)); critDamageText.setPosition(1360,430);
+    sf::Text wavePopup("Wave 1", font, 100); wavePopup.setFillColor((sf::Color::Red)); wavePopup.setPosition(475,250);
+    sf::Text waveIndicator("Wave 1", font, 25); waveIndicator.setFillColor((sf::Color::Red)); waveIndicator.setPosition(10,10);
+
+    bool showWavePopup = true;
+    sf::Clock gameClock; float waveTimer; float waveDelay = 3;
 
     sf::RectangleShape upgradeBackground(sf::Vector2f(1400.f, 500.f));
     upgradeBackground.setPosition(50,66); upgradeBackground.setFillColor(sf::Color::Black); upgradeBackground.setOutlineColor(sf::Color::Blue);
@@ -284,8 +289,19 @@ int main(){
 
                 if (rand() % 25 == 0){
                     Enemy *e = new Enemy();
-                    e->settings(crystalEnemy, rand() % 4800 - 2400, rand() % 4800 - 2400, 0);
-                    entities.push_back(e);
+                    int randX = rand() % 4800 - 2400; int randY = rand() % 4800 - 2400;
+                    
+                    if (randX > 700 || randX < 500){
+                        if(randY > 500 || randY < 300){
+                            e->settings(crystalEnemy, randX, randY, 0);
+                            entities.push_back(e);
+                        } else {
+                            e->isAlive = false;
+                        }
+                    }else {
+                        e->isAlive = false;
+                    }
+                    
                 }
 
                 for (auto p:entities) {
@@ -348,14 +364,22 @@ int main(){
                 window.draw(damageOnBar); window.draw(critChanceOnBar); window.draw(critDamageOnBar);
                 window.draw(attackText); window.draw(dexterityText); window.draw(damageText);
                 window.draw(critChanceText); window.draw(critDamageText);
+                window.draw(waveIndicator);
+
+                if (showWavePopup){
+                    float waveTime = gameClock.getElapsedTime().asSeconds(); gameClock.restart();
+                    waveTimer += waveTime;
+                    window.draw(wavePopup); 
+                    if (waveTimer > waveDelay){
+                        showWavePopup = false;
+                    }
+                }
 
                 window.setView(miniMap);
 
                 map.setPosition(((b->x)/3) + 285, ((b->y)/3) + 353);
 
-                window.draw(map);
-
-                window.draw(miniDude);
+                window.draw(map); window.draw(miniDude);
 
                 for (auto i:entities) {
                     if (i->name == "enemy"){
@@ -378,12 +402,9 @@ int main(){
 
                 window.clear(sf::Color::Cyan);
 
-                goldenEntity->draw(window);
-                window.draw(gold);
-                window.draw(upgradeBackground);
-                window.draw(dexterityUpgradeText);
-                window.draw(attackUpgradeText);
-                window.draw(pause);
+                goldenEntity->draw(window);window.draw(gold);window.draw(upgradeBackground);
+                window.draw(dexterityUpgradeText);window.draw(attackUpgradeText);window.draw(pause);
+
                 window.display();
 
                 break;}
