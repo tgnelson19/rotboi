@@ -253,7 +253,8 @@ int main(){
                                     mov->text.setPosition(q->x + 30, q->y - 10);
                                     mov->text.setFont(font); mov->text.setFillColor(sf::Color::Red);
                                     mov->text.setCharacterSize(20);
-                                    if ((rand() % (100/c->critChance) == 0) || c->critChance == 100){
+                                    if (c->critChance == 0){break;}
+                                    else if ((rand() % (100/c->critChance) == 0) || c->critChance == 100){
                                         damageNow *= ((c->critDamage + 100) / 100);
                                         mov->text.setFillColor(sf::Color::Yellow);
                                         mov->text.setCharacterSize(40);
