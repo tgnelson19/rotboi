@@ -11,6 +11,8 @@
 #include "classes/Entity.h"
 #include "classes/Enemy.h"
 #include "classes/BasicChaseEnemy.h"
+#include "classes/BasicRangedEnemy.h"
+#include "classes/EnemyProjectile.h"
 #include "classes/Background.h"
 #include "classes/MovingText.h"
  
@@ -51,7 +53,7 @@ int main(){
     cFW2.setScale(0.5, 0.5); cFS1.setScale(0.5, 0.5); cFS2.setScale(0.5, 0.5);
     cLNW.setOrigin(75, 0);cLW2.setOrigin(60, 0); cLS1.setOrigin(67.5, 0);cLS2.setOrigin(82.5, 0);
 
-    sf::Texture bg, arrowTexture, Inventory, Stats, CrystalBoi, GoldTexture, upgradedBowShot; /// Other textures initialized
+    sf::Texture bg, arrowTexture, Inventory, Stats, CrystalBoi, CrystalBluey, GoldTexture, upgradedBowShot; /// Other textures initialized
 
     if (!bg.loadFromFile("images/World1.png")) { /// Released for non-commercial use by Oryx
         std::cout << "Error: Failed to load file" << std::endl;
@@ -65,6 +67,10 @@ int main(){
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
+    if (!CrystalBluey.loadFromFile("images/Crystal_Charger.png")) { /// Created by Deca Games
+        std::cout << "Error: Failed to load file" << std::endl;
+        return EXIT_FAILURE;
+    }
     if (!GoldTexture.loadFromFile("images/gold.png")) { /// Released for non-commercial use by Oryx
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
@@ -74,7 +80,7 @@ int main(){
         return EXIT_FAILURE;
     }
 
-    sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi), goldIcon(GoldTexture); ///Mkaing basic sprites
+    sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi), crystalShootey(CrystalBluey), goldIcon(GoldTexture), enemyShot(upgradedBowShot); ///Making basic sprites
 
     enum states {STARTSCREEN, GAMEPLAY, PAUSE}; states state = STARTSCREEN; ///Enumerations for game states
 
@@ -242,14 +248,45 @@ int main(){
                     }
                 }
 
-                for (auto p:entities) { /// Enemy hit detection logic
-                    for (auto q:entities) {
+                if (rand() % 25 == 0){ ///Ranged Enemy creation logic
+                    BasicRangedEnemy *e = new BasicRangedEnemy();
+                    int randX = rand() % 4800 - 2400; int randY = rand() % 4800 - 2400;
+                    if (randX > 700 || randX < 500){
+                        if(randY > 500 || randY < 300){
+                            e->settings(crystalShootey, randX, randY, 0);
+                            entities.push_back(e);
+                        } else {
+                            e->isAlive = false;
+                        }
+                    }else {
+                        e->isAlive = false;
+                    }
+                }
+
+                for (auto p:entities) { 
+                    if (p->name == "enemy"){
+                        if(p->type == "BRE"){
+                            if(p->wantsToAttack){
+                                EnemyProjectile *ep = new EnemyProjectile();
+                                if (p->x < 0) { ///If x is negative
+                                    enemyShot.setScale(-1, -1); ///Flop the arrow on x and y axis
+                                    ep->backwards = true;
+                                    ep->settings(enemyShot, p->x, p->y, (atan(((p->y) - 375) / ((p->x) - 600)) * 57.29));
+                                } else {
+                                    enemyShot.setScale(1, 1);
+                                    ep->settings(enemyShot, p->x, p->y, (atan(((p->y) - 375) / ((p->x) - 600)) * 57.29));
+                                }
+                                p->wantsToAttack = false;
+                            }
+                        }
+                    }
+                    for (auto q:entities) { /// Enemy hit detection logic
                         if (p->name == "arrow"){
                             if (q->name == "enemy"){
                                 sf::FloatRect aBox = p->sprite.getGlobalBounds();
                                 sf::FloatRect eBox = q->sprite.getGlobalBounds();
                                 if (aBox.intersects(eBox)){
-                                    int damageNow = rand() % (p->maxDamage-p->minDamage) + p->maxDamage;
+                                    int damageNow = rand() % (p->maxDamage-p->minDamage + c->attack) + (p->maxDamage + c->attack);
                                     MovingText *mov = new MovingText();
                                     mov->text.setPosition(q->x + 30, q->y - 10);
                                     mov->text.setFont(font); mov->text.setFillColor(sf::Color::Red);

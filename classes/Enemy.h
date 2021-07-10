@@ -13,9 +13,10 @@ public:
     bool isShooting;
     char shotDirection;
     float dx, dy;
-    std::string type;
+    
     sf::RectangleShape healthbar;
     sf::RectangleShape hpbackground;
+    
 
     int despawnDistance;
 

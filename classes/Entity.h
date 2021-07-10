@@ -25,6 +25,8 @@ public:
     std::string name; /// Determines which entity it is
     sf::Sprite sprite; /// Gives the entity a sprite
     sf::RectangleShape miniEnemy;
+    std::string type;
+    bool wantsToAttack;
 
     Entity() { isAlive = true; } /// Default Constructor
 
