@@ -10,6 +10,7 @@
 #include "classes/Arrow.h"
 #include "classes/Entity.h"
 #include "classes/Enemy.h"
+#include "classes/BasicChaseEnemy.h"
 #include "classes/Background.h"
 #include "classes/MovingText.h"
  
@@ -227,7 +228,7 @@ int main(){
                 }
 
                 if (rand() % 25 == 0){ ///Enemy creation logic
-                    Enemy *e = new Enemy();
+                    BasicChaseEnemy *e = new BasicChaseEnemy();
                     int randX = rand() % 4800 - 2400; int randY = rand() % 4800 - 2400;
                     if (randX > 700 || randX < 500){
                         if(randY > 500 || randY < 300){
@@ -253,11 +254,12 @@ int main(){
                                     mov->text.setPosition(q->x + 30, q->y - 10);
                                     mov->text.setFont(font); mov->text.setFillColor(sf::Color::Red);
                                     mov->text.setCharacterSize(20);
-                                    if (c->critChance == 0){break;}
-                                    else if ((rand() % (100/c->critChance) == 0) || c->critChance == 100){
-                                        damageNow *= ((c->critDamage + 100) / 100);
-                                        mov->text.setFillColor(sf::Color::Yellow);
-                                        mov->text.setCharacterSize(40);
+                                    if (c->critChance != 0){
+                                        if ((rand() % (100/c->critChance) == 0) || c->critChance == 100){
+                                            damageNow *= ((c->critDamage + 100) / 100);
+                                            mov->text.setFillColor(sf::Color::Yellow);
+                                            mov->text.setCharacterSize(40);
+                                        }
                                     }
                                     q->health -= damageNow;
                                     p->isAlive = false;
