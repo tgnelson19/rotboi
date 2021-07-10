@@ -17,8 +17,8 @@ BasicChaseEnemy(){
 
 void update() {
 
-        if ( x > 0 && x < 1200){
-            if ( y > 0 && y < 800){
+        if ( x > -100 && x < 1300){
+            if ( y > -100 && y < 900){
                 if (x > 601){
                     angle = atan((y-375)/(x-600));
                     x -= speed*cos(angle);

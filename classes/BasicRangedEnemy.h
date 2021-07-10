@@ -15,9 +15,10 @@ float sightDistance;
 sf::Clock gClock;
 float attackDelay;
 float attackTimer;
+bool isMoving;
 
 BasicRangedEnemy(){
-    type = "BRE"; speed = 2; health = 500; maxHealth = 500; wantsToAttack = false; sightDistance = 300; attackDelay = 2; attackTimer = 0;
+    type = "BRE"; speed = 2; health = 500; maxHealth = 500; wantsToAttack = false; sightDistance = 300; attackDelay = 2; attackTimer = 0; isMoving = true;
 }
 
 
@@ -27,25 +28,31 @@ void update() {
     attackTimer += attackTime; 
     gClock.restart(); attackTime = 0;
 
-        if ( x > 0 && x < 1200){
-            if ( y > 0 && y < 800){
+        if ( x > -100 && x < 1300){
+            if ( y > -100 && y < 900){
                 
                 if ( sqrt(((x-600)*(x-600)) + ((y-390)*(y-390))) < sightDistance){
-                    if(attackTimer > attackDelay){
-                        wantsToAttack = true;
-                        attackTimer = 0;
-                    }         
-                }
+                    isMoving = false;
+                } 
                 else if (x > 601){
                     angle = atan((y-375)/(x-600));
                     x -= speed*cos(angle);
                     y -= speed*sin(angle);
+                    isMoving = true;
                 } else if (x < 599){
                     angle = atan((y-375)/(x-600));
                     x += speed*cos(angle);
                     y += speed*sin(angle);
+                    isMoving = true;
                 }
             }
+        }
+
+        if (!isMoving){
+            if(attackTimer > attackDelay){
+                wantsToAttack = true;
+                attackTimer = 0;
+            } 
         }
 
         if ( (x < -despawnDistance) || (x > despawnDistance)) {

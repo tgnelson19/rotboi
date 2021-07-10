@@ -14,15 +14,19 @@ public:
     bool backwards;
 
     EnemyProjectile(){
-        name = "eproj"; isAlive = true; backwards = false; range = 10; shotSpeed = 10;
+        name = "eproj"; isAlive = true; backwards = false; range = 7; shotSpeed = 5;
     }
 
     void update(){
         sprite.setRotation(angle);
 
-        x += shotSpeed * cos(dtr * angle);
-        y += shotSpeed * sin(dtr * angle);
-        
+        if (backwards) {
+            x += shotSpeed * cos(dtr * angle);
+            y += shotSpeed * sin(dtr * angle);
+        } else {
+            x -= shotSpeed * cos(dtr * angle);
+            y -= shotSpeed * sin(dtr * angle);
+        }
 
         if (pDX != 0 && pDY != 0){
             pDX /= sqrt(2); pDY /= sqrt(2);

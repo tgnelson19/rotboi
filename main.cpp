@@ -268,18 +268,22 @@ int main(){
                         if(p->type == "BRE"){
                             if(p->wantsToAttack){
                                 EnemyProjectile *ep = new EnemyProjectile();
-                                if (p->x < 0) { ///If x is negative
-                                    enemyShot.setScale(-1, -1); ///Flop the arrow on x and y axis
+                                if ((p->x - 600) < 0) { ///If x is negative
+                                    enemyShot.setScale(0.7, 0.7); ///Flop the arrow on x and y axis
                                     ep->backwards = true;
-                                    ep->settings(enemyShot, p->x, p->y, (atan(((p->y) - 375) / ((p->x) - 600)) * 57.29));
+                                    ep->settings(enemyShot, p->x + 25, 25 + p->y, (atan(((p->y) - 375) / ((p->x) - 600)) * 57.29));
                                 } else {
-                                    enemyShot.setScale(1, 1);
-                                    ep->settings(enemyShot, p->x, p->y, (atan(((p->y) - 375) / ((p->x) - 600)) * 57.29));
+                                    enemyShot.setScale(-0.7, -0.7);
+                                    ep->settings(enemyShot, p->x + 25, 25 + p->y, (atan(((p->y) - 375) / ((p->x) - 600)) * 57.29));
                                 }
+                                entities.push_back(ep);
                                 p->wantsToAttack = false;
                             }
                         }
                     }
+                }
+
+                for (auto p:entities) { 
                     for (auto q:entities) { /// Enemy hit detection logic
                         if (p->name == "arrow"){
                             if (q->name == "enemy"){
@@ -316,7 +320,7 @@ int main(){
                     if (!e->isAlive) {i = entities.erase(i); delete e;} else i++; //Move iterator to the next element in the list
                 }
                 for (auto i:entities) { ///Draw Logic
-                    if (i->name == "arrow" || i->name == "enemy" || i->name == "movingText"){
+                    if (i->name == "arrow" || "enemy" || "movingText" || "eproj"){
                         i->pDX = b->speed*b->dx; i->pDY = b->speed*b->dy;
                     }
                     i->draw(window);
