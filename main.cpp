@@ -53,7 +53,7 @@ int main(){
     cFW2.setScale(0.5, 0.5); cFS1.setScale(0.5, 0.5); cFS2.setScale(0.5, 0.5);
     cLNW.setOrigin(75, 0);cLW2.setOrigin(60, 0); cLS1.setOrigin(67.5, 0);cLS2.setOrigin(82.5, 0);
 
-    sf::Texture bg, arrowTexture, Inventory, Stats, CrystalBoi, CrystalBluey, GoldTexture, upgradedBowShot, upArrow, upgradeBackground, deadArrow; /// Other textures initialized
+    sf::Texture bg, arrowTexture, Inventory, Stats, CrystalBoi, CrystalBluey, GoldTexture, upgradedBowShot, upArrow, upgradeBackground, deadArrow, upgradeBoard; /// Other textures initialized
 
     if (!bg.loadFromFile("images/World1.png")) { /// Released for non-commercial use by Oryx
         std::cout << "Error: Failed to load file" << std::endl;
@@ -91,9 +91,13 @@ int main(){
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
+    if (!upgradeBoard.loadFromFile("images/pixil-frame-0 (6).png")) { /// Created by Deca Games
+        std::cout << "Error: Failed to load file" << std::endl;
+        return EXIT_FAILURE;
+    }
 
     sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi), crystalShootey(CrystalBluey), goldIcon(GoldTexture), enemyShot(upgradedBowShot); ///Making basic sprites
-    sf::Sprite uppy(upArrow), upBackground(upgradeBackground), deadUppy(deadArrow);
+    sf::Sprite uppy(upArrow), upBackground(upgradeBackground), deadUppy(deadArrow), upgBoard(upgradeBoard);
 
     uppy.setScale(0.7, 0.7);
 
@@ -389,9 +393,11 @@ int main(){
                 uppy.setPosition(1201, 397); window.draw(uppy);
                 uppy.setPosition(1265, 620); window.draw(uppy);
 
+                upgBoard.setPosition(450, 35); window.draw(upgBoard);
+
                 
 
-
+                goldenEntity->sprite.setPosition(100,100);
                 goldenEntity->draw(window);window.draw(gold);window.draw(pause);
 
 
