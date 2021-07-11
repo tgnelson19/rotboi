@@ -17,6 +17,7 @@ public:
     char shotDirection;
     bool canShoot;
     float shotTimer;
+    float secondsPerShot;
 
     bool shot2;
     int goldCount;
@@ -28,6 +29,7 @@ public:
     int critDamage;
     float shotSpeed;
     float range;
+    int enemySpawnSpeed;
 
     char lastDirection;
 
@@ -47,16 +49,18 @@ public:
         canShoot = false;
         shot2 = false;
 
-        dexterity = 1;
-        attack = 1;
+        dexterity = 0;
+        attack = 0;
         shotSpeed = 10;
         range = 5;
 
         minDamage = 100;
         maxDamage = 115;
 
-        critChance = 25;
+        critChance = 10;
         critDamage = 100;
+
+        enemySpawnSpeed = 50;
 
     }
 
@@ -69,9 +73,15 @@ public:
         walkTimer += walkTime;
         shotTimer += shootTime;
 
-        if (shotTimer > (float(dexterity)/10)){
+        secondsPerShot = 0.5 - (0.05 * dexterity);
+        
+        if (secondsPerShot < 0.05){
+            secondsPerShot = 0.05;
+        }
+
+        if (shotTimer > secondsPerShot){
             canShoot = true;
-        } else if (shotTimer > ((float(dexterity) / 10) / 2)){
+        } else if (shotTimer > secondsPerShot / 2){
             shot2 = false;
         }
 

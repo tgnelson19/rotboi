@@ -53,7 +53,7 @@ int main(){
     cFW2.setScale(0.5, 0.5); cFS1.setScale(0.5, 0.5); cFS2.setScale(0.5, 0.5);
     cLNW.setOrigin(75, 0);cLW2.setOrigin(60, 0); cLS1.setOrigin(67.5, 0);cLS2.setOrigin(82.5, 0);
 
-    sf::Texture bg, arrowTexture, Inventory, Stats, CrystalBoi, CrystalBluey, GoldTexture, upgradedBowShot; /// Other textures initialized
+    sf::Texture bg, arrowTexture, Inventory, Stats, CrystalBoi, CrystalBluey, GoldTexture, upgradedBowShot, upArrow, upgradeBackground; /// Other textures initialized
 
     if (!bg.loadFromFile("images/World1.png")) { /// Released for non-commercial use by Oryx
         std::cout << "Error: Failed to load file" << std::endl;
@@ -79,8 +79,19 @@ int main(){
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
+    if (!upArrow.loadFromFile("images/pixil-frame-0.png")) { /// Created by Deca Games
+        std::cout << "Error: Failed to load file" << std::endl;
+        return EXIT_FAILURE;
+    }
+    if (!upgradeBackground.loadFromFile("images/pixil-frame-0 (1).png")) { /// Created by Deca Games
+        std::cout << "Error: Failed to load file" << std::endl;
+        return EXIT_FAILURE;
+    }
 
     sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi), crystalShootey(CrystalBluey), goldIcon(GoldTexture), enemyShot(upgradedBowShot); ///Making basic sprites
+    sf::Sprite uppy(upArrow), upBackground(upgradeBackground);
+
+    uppy.setScale(3.75,3.75);
 
     enum states {STARTSCREEN, GAMEPLAY, PAUSE}; states state = STARTSCREEN; ///Enumerations for game states
 
@@ -115,13 +126,11 @@ int main(){
     entities.push_back(goldenEntity);
 
     ///Texts initialized
-    sf::Text gold("0", font, 30); gold.setFillColor(sf::Color::White); gold.setPosition(1100, 15);
+    sf::Text gold("0", font, 30); gold.setFillColor(sf::Color::White); gold.setPosition(1100, 20);
     sf::Text startText("Welcome to ROTBOI!", font, 50); startText.setFillColor(sf::Color::Black); startText.setPosition(550, 200);
     sf::Text pauseHelp("Pause with the Escape key | Unpause with the Tab key", font, 25); pauseHelp.setFillColor(sf::Color::Black); pauseHelp.setPosition(460, 700);
-    sf::Text pause("Paused | Unpause with the Tab key", font, 50); pause.setFillColor(sf::Color::Black); pause.setPosition(400, 700);
+    sf::Text pause("Unpause with the Tab key", font, 25); pause.setFillColor(sf::Color::Black); pause.setPosition(750, 20);
     sf::Text playButtonText("Play", font, 50); playButtonText.setFillColor(sf::Color::Black); playButtonText.setPosition(700, 475);
-    sf::Text dexterityUpgradeText("Dexterity", font, 50); dexterityUpgradeText.setFillColor(sf::Color::Yellow); dexterityUpgradeText.setPosition(100,100);
-    sf::Text attackUpgradeText("Attack", font, 50); attackUpgradeText.setFillColor((sf::Color::Magenta)); attackUpgradeText.setPosition(100,200);
     sf::Text attackOnBar("Attack", font, 20); attackOnBar.setFillColor((sf::Color::Magenta)); attackOnBar.setPosition(1220,310);
     sf::Text dexterityOnBar("Dexterity", font, 20); dexterityOnBar.setFillColor((sf::Color::Yellow)); dexterityOnBar.setPosition(1220,340);
     sf::Text damageOnBar("Damage", font, 20); damageOnBar.setFillColor((sf::Color::Black)); damageOnBar.setPosition(1220,370);
@@ -138,8 +147,6 @@ int main(){
     bool showWavePopup = true; sf::Clock gameClock; float waveTimer; float waveDelay = 3; ///Wave counter data
 
     ///Shapes initialized
-    sf::RectangleShape upgradeBackground(sf::Vector2f(1400.f, 500.f)); upgradeBackground.setPosition(50,66); 
-    upgradeBackground.setFillColor(sf::Color::Black); upgradeBackground.setOutlineColor(sf::Color::Blue);
     sf::RectangleShape openingButton(sf::Vector2f(400.f, 200.f));openingButton.setPosition(550, 400); 
     openingButton.setFillColor(sf::Color::Blue); openingButton.setOutlineColor(sf::Color::Magenta);
     sf::RectangleShape sidebar(sf::Vector2f(400.f, 800.f)); sidebar.setPosition(1200,0); sidebar.setFillColor(sf::Color::Black);
@@ -233,7 +240,7 @@ int main(){
                     c->isShooting = true;
                 }
 
-                if (rand() % 25 == 0){ ///Enemy creation logic
+                if (rand() % c->enemySpawnSpeed == 0){ ///Enemy creation logic
                     BasicChaseEnemy *e = new BasicChaseEnemy();
                     int randX = rand() % 4800 - 2400; int randY = rand() % 4800 - 2400;
                     if (randX > 700 || randX < 500){
@@ -248,7 +255,7 @@ int main(){
                     }
                 }
 
-                if (rand() % 25 == 0){ ///Ranged Enemy creation logic
+                if (rand() % c->enemySpawnSpeed == 0){ ///Ranged Enemy creation logic
                     BasicRangedEnemy *e = new BasicRangedEnemy();
                     int randX = rand() % 4800 - 2400; int randY = rand() % 4800 - 2400;
                     if (randX > 700 || randX < 500){
@@ -263,7 +270,7 @@ int main(){
                     }
                 }
 
-                for (auto p:entities) { 
+                for (auto p:entities) { /// Basic Ranged Enemy Attack Logic
                     if (p->name == "enemy"){
                         if(p->type == "BRE"){
                             if(p->wantsToAttack){
@@ -359,10 +366,15 @@ int main(){
                 sf::Event move{};
                 while (window.pollEvent(move)) { if (move.type == sf::Event::Closed) {window.close(); } } ///Window close logic
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) { state = GAMEPLAY; } ///Back to game logic
-                window.clear(sf::Color::Cyan); ///Drawing the pause screen
-                goldenEntity->draw(window);window.draw(gold);window.draw(upgradeBackground);
-                window.draw(dexterityUpgradeText);window.draw(attackUpgradeText);window.draw(pause);
+
+                window.draw(upBackground);
+
+
+                goldenEntity->draw(window);window.draw(gold);window.draw(pause);
+
+
                 window.display();
+
                 break;}
         }
     }

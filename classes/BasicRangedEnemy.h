@@ -7,7 +7,6 @@
 
 
 class BasicRangedEnemy : public Enemy {
-
 public:
 
 
@@ -18,7 +17,19 @@ float attackTimer;
 bool isMoving;
 
 BasicRangedEnemy(){
-    type = "BRE"; speed = 2; health = 500; maxHealth = 500; wantsToAttack = false; sightDistance = 300; attackDelay = 2; attackTimer = 0; isMoving = true;
+    type = "BRE"; 
+
+    speed = 2; 
+    health = 500; 
+    maxHealth = 500; 
+
+    wantsToAttack = false; 
+    sightDistance = 300; 
+
+    attackDelay = 2; 
+    attackTimer = 0; 
+
+    isMoving = true;
 }
 
 
