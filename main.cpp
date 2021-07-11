@@ -53,7 +53,7 @@ int main(){
     cFW2.setScale(0.5, 0.5); cFS1.setScale(0.5, 0.5); cFS2.setScale(0.5, 0.5);
     cLNW.setOrigin(75, 0);cLW2.setOrigin(60, 0); cLS1.setOrigin(67.5, 0);cLS2.setOrigin(82.5, 0);
 
-    sf::Texture bg, arrowTexture, Inventory, Stats, CrystalBoi, CrystalBluey, GoldTexture, upgradedBowShot, upArrow, upgradeBackground; /// Other textures initialized
+    sf::Texture bg, arrowTexture, Inventory, Stats, CrystalBoi, CrystalBluey, GoldTexture, upgradedBowShot, upArrow, upgradeBackground, deadArrow; /// Other textures initialized
 
     if (!bg.loadFromFile("images/World1.png")) { /// Released for non-commercial use by Oryx
         std::cout << "Error: Failed to load file" << std::endl;
@@ -79,7 +79,7 @@ int main(){
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
-    if (!upArrow.loadFromFile("images/pixil-frame-0.png")) { /// Created by Deca Games
+    if (!upArrow.loadFromFile("images/pixil-frame-0 (4).png")) { /// Created by Deca Games
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
@@ -87,11 +87,13 @@ int main(){
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
+    if (!deadArrow.loadFromFile("images/pixil-frame-0 (5).png")) { /// Created by Deca Games
+        std::cout << "Error: Failed to load file" << std::endl;
+        return EXIT_FAILURE;
+    }
 
     sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi), crystalShootey(CrystalBluey), goldIcon(GoldTexture), enemyShot(upgradedBowShot); ///Making basic sprites
-    sf::Sprite uppy(upArrow), upBackground(upgradeBackground);
-
-    uppy.setScale(3.75,3.75);
+    sf::Sprite uppy(upArrow), upBackground(upgradeBackground), deadUppy(deadArrow);
 
     enum states {STARTSCREEN, GAMEPLAY, PAUSE}; states state = STARTSCREEN; ///Enumerations for game states
 
@@ -143,6 +145,8 @@ int main(){
     sf::Text critDamageText("0", font, 20); critDamageText.setFillColor((sf::Color::Red)); critDamageText.setPosition(1360,430);
     sf::Text wavePopup("Wave 1", font, 100); wavePopup.setFillColor((sf::Color::Red)); wavePopup.setPosition(475,250);
     sf::Text waveIndicator("Wave 1", font, 25); waveIndicator.setFillColor((sf::Color::Red)); waveIndicator.setPosition(10,10);
+    sf::Text mouseX(" ", font, 25); mouseX.setFillColor((sf::Color::Red)); mouseX.setPosition(10,10);
+    sf::Text mouseY(" ", font, 25); mouseY.setFillColor((sf::Color::Red)); mouseY.setPosition(10,40);
 
     bool showWavePopup = true; sf::Clock gameClock; float waveTimer; float waveDelay = 3; ///Wave counter data
 
@@ -367,7 +371,19 @@ int main(){
                 while (window.pollEvent(move)) { if (move.type == sf::Event::Closed) {window.close(); } } ///Window close logic
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) { state = GAMEPLAY; } ///Back to game logic
 
+                sf::Vector2i mvec = sf::Mouse::getPosition(window);
+
+                mouseX.setString(std::to_string(mvec.x));
+                mouseY.setString(std::to_string(mvec.y));
+
+
                 window.draw(upBackground);
+
+                window.draw(mouseX); window.draw(mouseY);
+
+                uppy.setPosition(200, 600);
+
+                window.draw(uppy);
 
 
                 goldenEntity->draw(window);window.draw(gold);window.draw(pause);
