@@ -95,6 +95,8 @@ int main(){
     sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi), crystalShootey(CrystalBluey), goldIcon(GoldTexture), enemyShot(upgradedBowShot); ///Making basic sprites
     sf::Sprite uppy(upArrow), upBackground(upgradeBackground), deadUppy(deadArrow);
 
+    uppy.setScale(0.7, 0.7);
+
     enum states {STARTSCREEN, GAMEPLAY, PAUSE}; states state = STARTSCREEN; ///Enumerations for game states
 
     sf::RenderWindow window(sf::VideoMode(W, H), "rotboi"); ///Main window initialized
@@ -381,9 +383,13 @@ int main(){
 
                 window.draw(mouseX); window.draw(mouseY);
 
-                uppy.setPosition(200, 600);
+                uppy.setPosition(451, 416); window.draw(uppy);
+                uppy.setPosition(674, 467); window.draw(uppy);
+                uppy.setPosition(934, 549); window.draw(uppy);
+                uppy.setPosition(1201, 397); window.draw(uppy);
+                uppy.setPosition(1265, 620); window.draw(uppy);
 
-                window.draw(uppy);
+                
 
 
                 goldenEntity->draw(window);window.draw(gold);window.draw(pause);
