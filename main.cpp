@@ -58,7 +58,7 @@ int main(){
     cLNW.setOrigin(75, 0);cLW2.setOrigin(60, 0); cLS1.setOrigin(67.5, 0);cLS2.setOrigin(82.5, 0);
 
     sf::Texture bg, arrowTexture, Inventory, Stats, CrystalBoi, CrystalBluey, GoldTexture, 
-    upgradedBowShot, upArrow, upgradeBackground, deadArrow, upgradeBoard, stScreen, bright; /// Other textures initialized
+    upgradedBowShot, upArrow, upgradeBackground, deadArrow, upgradeBoard, stScreen, bright, inv; /// Other textures initialized
 
     if (!bg.loadFromFile("images/World1.png")) { /// Released for non-commercial use by Oryx
         std::cout << "Error: Failed to load file" << std::endl;
@@ -108,9 +108,13 @@ int main(){
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
+    if (!inv.loadFromFile("images/pixil-frame-0 (8).png")) { /// Created by Deca Games
+        std::cout << "Error: Failed to load file" << std::endl;
+        return EXIT_FAILURE;
+    }
 
     sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi), crystalShootey(CrystalBluey), goldIcon(GoldTexture), enemyShot(upgradedBowShot); ///Making basic sprites
-    sf::Sprite uppy(upArrow), upBackground(upgradeBackground), deadUppy(deadArrow), upgBoard(upgradeBoard), startScreen(stScreen), highLight(bright);
+    sf::Sprite uppy(upArrow), upBackground(upgradeBackground), deadUppy(deadArrow), upgBoard(upgradeBoard), startScreen(stScreen), highLight(bright), rightSide(inv);
 
     uppy.setScale(0.7, 0.7); startScreen.setScale(5,5);
 
@@ -146,35 +150,47 @@ int main(){
     entities.push_back(c);
 
     Entity *goldenEntity = new Entity(); ///Gold entity
-    goldIcon.setScale(0.75, 0.75);
-    goldenEntity->settings(goldIcon, 1050, 10, 0);
+    goldIcon.setScale(0.6, 0.6);
+    goldenEntity->settings(goldIcon, 1360, 298, 0);
     entities.push_back(goldenEntity);
 
     ///Texts initialized
-    sf::Text gold("0", font, 30); gold.setFillColor(sf::Color::White); gold.setPosition(1100, 20);
+    sf::Text gold("0", font, 30); gold.setFillColor(sf::Color::White); gold.setPosition(1400, 300);
     sf::Text pauseHelp("Pause with the Escape key | Unpause with the Tab key", font, 25); pauseHelp.setFillColor(sf::Color::Black); pauseHelp.setPosition(460, 750);
-    sf::Text pause("Unpause with the Tab key", font, 25); pause.setFillColor(sf::Color::Black); pause.setPosition(750, 20);
+    sf::Text pause("Unpause with the Tab key", font, 25); pause.setFillColor(sf::Color::Black); pause.setPosition(100, 220);
     sf::Text playButtonText("Play", font, 50); playButtonText.setFillColor(sf::Color::Black); playButtonText.setPosition(700, 475);
-    sf::Text attackOnBar("Attack", font, 20); attackOnBar.setFillColor((sf::Color::Magenta)); attackOnBar.setPosition(1220,310);
-    sf::Text dexterityOnBar("Dexterity", font, 20); dexterityOnBar.setFillColor((sf::Color::Yellow)); dexterityOnBar.setPosition(1220,340);
-    sf::Text damageOnBar("Damage", font, 20); damageOnBar.setFillColor((sf::Color::Black)); damageOnBar.setPosition(1220,370);
-    sf::Text critChanceOnBar("Crit Chance", font, 20); critChanceOnBar.setFillColor((sf::Color::Yellow)); critChanceOnBar.setPosition(1220,400);
-    sf::Text critDamageOnBar("Crit Damage", font, 20); critDamageOnBar.setFillColor((sf::Color::Red)); critDamageOnBar.setPosition(1220,430);
-    sf::Text attackText("0", font, 20); attackText.setFillColor((sf::Color::Magenta)); attackText.setPosition(1360,310);
-    sf::Text dexterityText("0", font, 20); dexterityText.setFillColor((sf::Color::Yellow)); dexterityText.setPosition(1360,340);
-    sf::Text damageText("0", font, 20); damageText.setFillColor((sf::Color::Black)); damageText.setPosition(1360,370);
-    sf::Text critChanceText("0", font, 20); critChanceText.setFillColor((sf::Color::Yellow)); critChanceText.setPosition(1360,400);
-    sf::Text critDamageText("0", font, 20); critDamageText.setFillColor((sf::Color::Red)); critDamageText.setPosition(1360,430);
+
+
+    sf::Text damageOnBar("DMG", font, 30); damageOnBar.setFillColor((sf::Color::Black)); damageOnBar.setPosition(1230,360);
+    sf::Text attackOnBar("ATT", font, 20); attackOnBar.setFillColor((sf::Color::Magenta)); attackOnBar.setPosition(1225,430);
+    sf::Text dexterityOnBar("DEX", font, 20); dexterityOnBar.setFillColor((sf::Color::Yellow)); dexterityOnBar.setPosition(1370,430);
+    sf::Text critChanceOnBar("C.C.", font, 20); critChanceOnBar.setFillColor((sf::Color::Yellow)); critChanceOnBar.setPosition(1225,465);
+    sf::Text critDamageOnBar("C.D.", font, 20); critDamageOnBar.setFillColor((sf::Color::Red)); critDamageOnBar.setPosition(1370,465);
+    sf::Text speedOnBar("C.D.", font, 20); speedOnBar.setFillColor((sf::Color::Green)); speedOnBar.setPosition(1225,500);
+    sf::Text vitalityOnBar("C.D.", font, 20); vitalityOnBar.setFillColor((sf::Color::Red)); vitalityOnBar.setPosition(1370,500);
+
+
+    sf::Text damageText("0", font, 30); damageText.setFillColor((sf::Color::Black)); damageText.setPosition(1340,360);
+    sf::Text attackText("0", font, 20); attackText.setFillColor((sf::Color::Magenta)); attackText.setPosition(1270,430);
+    sf::Text dexterityText("0", font, 20); dexterityText.setFillColor((sf::Color::Yellow)); dexterityText.setPosition(1415,430);
+    sf::Text critChanceText("0", font, 20); critChanceText.setFillColor((sf::Color::Yellow)); critChanceText.setPosition(1270,465);
+    sf::Text critDamageText("0", font, 20); critDamageText.setFillColor((sf::Color::Red)); critDamageText.setPosition(1415,465);
+    sf::Text speedText("0", font, 20); speedText.setFillColor((sf::Color::Green)); speedText.setPosition(1270,500);
+    sf::Text vitalityText("0", font, 20); vitalityText.setFillColor((sf::Color::Red)); vitalityText.setPosition(1415,500);
+
+
+
     sf::Text wavePopup("Wave 1", font, 100); wavePopup.setFillColor((sf::Color::Red)); wavePopup.setPosition(475,250);
-    sf::Text waveIndicator("Wave 1", font, 25); waveIndicator.setFillColor((sf::Color::Red)); waveIndicator.setPosition(10,10);
+    sf::Text waveIndicator("Wave 1", font, 25); waveIndicator.setFillColor((sf::Color::Red)); waveIndicator.setPosition(1230,302);
     sf::Text mouseX(" ", font, 25); mouseX.setFillColor((sf::Color::Red)); mouseX.setPosition(10,10);
     sf::Text mouseY(" ", font, 25); mouseY.setFillColor((sf::Color::Red)); mouseY.setPosition(10,40);
 
     bool showWavePopup = true; sf::Clock gameClock; float waveTimer; float waveDelay = 3; ///Wave counter data
 
+    rightSide.setScale(0.71, 0.71); rightSide.setPosition(1208, 292); 
+
     ///Shapes initialized
-    sf::RectangleShape sidebar(sf::Vector2f(400.f, 800.f)); sidebar.setPosition(1200,0); sidebar.setFillColor(sf::Color::Black);
-    sf::RectangleShape statsOnBar(sf::Vector2f(280, 170.f)); statsOnBar.setPosition(1210,300); statsOnBar.setFillColor(sf::Color::Cyan);
+    sf::RectangleShape sidebar(sf::Vector2f(400.f, 800.f)); sidebar.setPosition(1200,0); sidebar.setFillColor(sf::Color::Black); 
     sf::RectangleShape miniDude(sf::Vector2f(25.f, 25.f)); miniDude.setFillColor(sf::Color::Yellow); miniDude.setPosition(475,475);
 
     float mapscale = 1.0/3.0; map.scale(mapscale,mapscale); ///Map scaled for the minimap
@@ -384,12 +400,18 @@ int main(){
                 attackText.setString(std::to_string(c->attack)); dexterityText.setString(std::to_string(c->dexterity));
                 damageText.setString(std::to_string(c->minDamage) + " - " + std::to_string(c->maxDamage));
                 critChanceText.setString(std::to_string(c->critChance) + "%"); critDamageText.setString("+" + std::to_string(c->critDamage) + "%");
-                goldenEntity->draw(window); c->draw(window); window.draw(gold); window.draw(sidebar);
-                window.draw(statsOnBar); window.draw(attackOnBar); window.draw(dexterityOnBar);
+
+                window.draw(sidebar); window.draw(rightSide);
+
+                goldenEntity->draw(window); c->draw(window); window.draw(gold);
+                window.draw(attackOnBar); window.draw(dexterityOnBar);
                 window.draw(damageOnBar); window.draw(critChanceOnBar); window.draw(critDamageOnBar);
                 window.draw(attackText); window.draw(dexterityText); window.draw(damageText);
                 window.draw(critChanceText); window.draw(critDamageText);
+                window.draw(speedText); window.draw(speedOnBar);
+                window.draw(vitalityText); window.draw(vitalityOnBar);
                 window.draw(waveIndicator);
+                
 
                 sf::Vector2i mvec = sf::Mouse::getPosition(window);
                 mouseX.setString(std::to_string(mvec.x));
