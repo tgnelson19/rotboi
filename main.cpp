@@ -58,7 +58,7 @@ int main(){
     cLNW.setOrigin(75, 0);cLW2.setOrigin(60, 0); cLS1.setOrigin(67.5, 0);cLS2.setOrigin(82.5, 0);
 
     sf::Texture bg, arrowTexture, Inventory, Stats, CrystalBoi, CrystalBluey, GoldTexture, 
-    upgradedBowShot, upArrow, upgradeBackground, deadArrow, upgradeBoard, stScreen, bright, inv; /// Other textures initialized
+    upgradedBowShot, upArrow, upgradeBackground, deadArrow, upgradeBoard, stScreen, bright, inv, bosRom; /// Other textures initialized
 
     if (!bg.loadFromFile("images/World1.png")) { /// Released for non-commercial use by Oryx
         std::cout << "Error: Failed to load file" << std::endl;
@@ -84,43 +84,52 @@ int main(){
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
-    if (!upArrow.loadFromFile("images/pixil-frame-0 (4).png")) { /// Created by Deca Games
+    if (!upArrow.loadFromFile("images/pixil-frame-0 (4).png")) { 
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
-    if (!upgradeBackground.loadFromFile("images/pixil-frame-0 (1).png")) { /// Created by Deca Games
+    if (!upgradeBackground.loadFromFile("images/pixil-frame-0 (1).png")) { 
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
-    if (!deadArrow.loadFromFile("images/pixil-frame-0 (5).png")) { /// Created by Deca Games
+    if (!deadArrow.loadFromFile("images/pixil-frame-0 (5).png")) { 
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
-    if (!upgradeBoard.loadFromFile("images/pixil-frame-0 (6).png")) { /// Created by Deca Games
+    if (!upgradeBoard.loadFromFile("images/pixil-frame-0 (6).png")) { 
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
-    if (!stScreen.loadFromFile("images/startScreen.png")) { /// Created by Deca Games
+    if (!stScreen.loadFromFile("images/startScreen.png")) { 
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
-    if (!bright.loadFromFile("images/pixil-frame-0 (7).png")) { /// Created by Deca Games
+    if (!bright.loadFromFile("images/pixil-frame-0 (7).png")) { 
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
-    if (!inv.loadFromFile("images/pixil-frame-0 (8).png")) { /// Created by Deca Games
+    if (!inv.loadFromFile("images/pixil-frame-0 (8).png")) { 
+        std::cout << "Error: Failed to load file" << std::endl;
+        return EXIT_FAILURE;
+    }
+    if (!bosRom.loadFromFile("images/pixil-frame-0 (9).png")) { 
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
 
     sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi), crystalShootey(CrystalBluey), goldIcon(GoldTexture), enemyShot(upgradedBowShot); ///Making basic sprites
     sf::Sprite uppy(upArrow), upBackground(upgradeBackground), deadUppy(deadArrow), upgBoard(upgradeBoard), startScreen(stScreen), highLight(bright), rightSide(inv);
+    sf::Sprite bossRoom(bosRom);
 
     uppy.setScale(0.7, 0.7); startScreen.setScale(5,5);
 
     highLight.setScale(1.2, 1.2);
 
     highLight.setPosition(335, 520);
+
+    rightSide.setScale(0.71, 0.71); rightSide.setPosition(1208, 292); 
+
+    
 
     enum states {STARTSCREEN, GAMEPLAY, PAUSE}; states state = STARTSCREEN; ///Enumerations for game states
 
@@ -143,9 +152,13 @@ int main(){
 
     sf::View miniMap; miniMap.setViewport(sf::FloatRect(0.805f, 0.008f, 0.19f, 0.35f)); ///Makes a minimap
 
+     
+
     Background *b = new Background(); /// Background entity
-    map.scale(60,60);
-    b->settings(map, -40000, -40000, 0);
+    ///map.scale(60,60);
+    bossRoom.setScale(2,2);
+    b->settings(bossRoom, -1900, -4500, 0);
+    /// For map it's -40000, -40000
     b->speed = 6;
     entities.push_back(b);
 
@@ -191,13 +204,18 @@ int main(){
 
     bool showWavePopup = true; sf::Clock gameClock; float waveTimer; float waveDelay = 3; ///Wave counter data
 
-    rightSide.setScale(0.71, 0.71); rightSide.setPosition(1208, 292); 
+    
 
     ///Shapes initialized
     sf::RectangleShape sidebar(sf::Vector2f(400.f, 800.f)); sidebar.setPosition(1200,0); sidebar.setFillColor(sf::Color::Black); 
     sf::RectangleShape miniDude(sf::Vector2f(25.f, 25.f)); miniDude.setFillColor(sf::Color::Yellow); miniDude.setPosition(475,475);
 
-    float mapscale = 1.0/3.0; map.scale(mapscale,mapscale); ///Map scaled for the minimap
+
+    float mapscale = 1.0/3.0; 
+     ///map.scale(mapscale,mapscale); ///Map scaled for the minimap
+     bossRoom.scale(mapscale,mapscale);
+
+   
 
     while (window.isOpen()) {
         switch (state){
@@ -234,6 +252,8 @@ int main(){
             break; }
 
             case GAMEPLAY: { ///On gameplay
+
+                window.clear(sf::Color::Black);
 
                 sf::Event move{};
                 while (window.pollEvent(move)) { if (move.type == sf::Event::Closed) { window.close(); } } ///Close logic
@@ -433,8 +453,11 @@ int main(){
 
                 ///Minimap drawing
                 window.setView(miniMap);
-                map.setPosition(((b->x)/3) + 285, ((b->y)/3) + 353);
-                window.draw(map); window.draw(miniDude);
+                ///map.setPosition(((b->x)/3) + 285, ((b->y)/3) + 353);
+                bossRoom.setPosition(((b->x)/3) + 285, ((b->y)/3) + 353);
+                ///window.draw(map); 
+                window.draw(bossRoom); 
+                window.draw(miniDude);
                 for (auto i:entities) { if (i->name == "enemy"){window.draw(i->miniEnemy);}}
                 window.setView(window.getDefaultView());
 
