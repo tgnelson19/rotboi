@@ -15,6 +15,10 @@
 #include "classes/EnemyProjectile.h"
 #include "classes/Background.h"
 #include "classes/MovingText.h"
+
+const int enemyCap = 10;
+
+int enemyCount = 0;
  
 int main(){
 
@@ -53,7 +57,8 @@ int main(){
     cFW2.setScale(0.5, 0.5); cFS1.setScale(0.5, 0.5); cFS2.setScale(0.5, 0.5);
     cLNW.setOrigin(75, 0);cLW2.setOrigin(60, 0); cLS1.setOrigin(67.5, 0);cLS2.setOrigin(82.5, 0);
 
-    sf::Texture bg, arrowTexture, Inventory, Stats, CrystalBoi, CrystalBluey, GoldTexture, upgradedBowShot, upArrow, upgradeBackground, deadArrow, upgradeBoard; /// Other textures initialized
+    sf::Texture bg, arrowTexture, Inventory, Stats, CrystalBoi, CrystalBluey, GoldTexture, 
+    upgradedBowShot, upArrow, upgradeBackground, deadArrow, upgradeBoard, stScreen, bright; /// Other textures initialized
 
     if (!bg.loadFromFile("images/World1.png")) { /// Released for non-commercial use by Oryx
         std::cout << "Error: Failed to load file" << std::endl;
@@ -95,11 +100,23 @@ int main(){
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
+    if (!stScreen.loadFromFile("images/startScreen.png")) { /// Created by Deca Games
+        std::cout << "Error: Failed to load file" << std::endl;
+        return EXIT_FAILURE;
+    }
+    if (!bright.loadFromFile("images/pixil-frame-0 (7).png")) { /// Created by Deca Games
+        std::cout << "Error: Failed to load file" << std::endl;
+        return EXIT_FAILURE;
+    }
 
     sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi), crystalShootey(CrystalBluey), goldIcon(GoldTexture), enemyShot(upgradedBowShot); ///Making basic sprites
-    sf::Sprite uppy(upArrow), upBackground(upgradeBackground), deadUppy(deadArrow), upgBoard(upgradeBoard);
+    sf::Sprite uppy(upArrow), upBackground(upgradeBackground), deadUppy(deadArrow), upgBoard(upgradeBoard), startScreen(stScreen), highLight(bright);
 
-    uppy.setScale(0.7, 0.7);
+    uppy.setScale(0.7, 0.7); startScreen.setScale(5,5);
+
+    highLight.setScale(1.2, 1.2);
+
+    highLight.setPosition(335, 520);
 
     enum states {STARTSCREEN, GAMEPLAY, PAUSE}; states state = STARTSCREEN; ///Enumerations for game states
 
@@ -135,8 +152,7 @@ int main(){
 
     ///Texts initialized
     sf::Text gold("0", font, 30); gold.setFillColor(sf::Color::White); gold.setPosition(1100, 20);
-    sf::Text startText("Welcome to ROTBOI!", font, 50); startText.setFillColor(sf::Color::Black); startText.setPosition(550, 200);
-    sf::Text pauseHelp("Pause with the Escape key | Unpause with the Tab key", font, 25); pauseHelp.setFillColor(sf::Color::Black); pauseHelp.setPosition(460, 700);
+    sf::Text pauseHelp("Pause with the Escape key | Unpause with the Tab key", font, 25); pauseHelp.setFillColor(sf::Color::Black); pauseHelp.setPosition(460, 750);
     sf::Text pause("Unpause with the Tab key", font, 25); pause.setFillColor(sf::Color::Black); pause.setPosition(750, 20);
     sf::Text playButtonText("Play", font, 50); playButtonText.setFillColor(sf::Color::Black); playButtonText.setPosition(700, 475);
     sf::Text attackOnBar("Attack", font, 20); attackOnBar.setFillColor((sf::Color::Magenta)); attackOnBar.setPosition(1220,310);
@@ -157,8 +173,6 @@ int main(){
     bool showWavePopup = true; sf::Clock gameClock; float waveTimer; float waveDelay = 3; ///Wave counter data
 
     ///Shapes initialized
-    sf::RectangleShape openingButton(sf::Vector2f(400.f, 200.f));openingButton.setPosition(550, 400); 
-    openingButton.setFillColor(sf::Color::Blue); openingButton.setOutlineColor(sf::Color::Magenta);
     sf::RectangleShape sidebar(sf::Vector2f(400.f, 800.f)); sidebar.setPosition(1200,0); sidebar.setFillColor(sf::Color::Black);
     sf::RectangleShape statsOnBar(sf::Vector2f(280, 170.f)); statsOnBar.setPosition(1210,300); statsOnBar.setFillColor(sf::Color::Cyan);
     sf::RectangleShape miniDude(sf::Vector2f(25.f, 25.f)); miniDude.setFillColor(sf::Color::Yellow); miniDude.setPosition(475,475);
@@ -172,13 +186,29 @@ int main(){
                 sf::Event move{};
                 while (window.pollEvent(move)) { if (move.type == sf::Event::Closed) { window.close(); } } ///Close logic
 
-                if (sf::Mouse::isButtonPressed(mouse.Left)) { ///Button 'click' logic
-                    sf::Vector2i mvec = sf::Mouse::getPosition(window);
-                    if( mvec.x > (0.3666*window.getSize().x) && mvec.x < (0.63333*window.getSize().x)){ if(mvec.y > (0.5*window.getSize().y) && mvec.y < (0.75*window.getSize().y)) { state = GAMEPLAY;}}
-                }
+                
 
-                window.clear(sf::Color::Cyan); ///Startscreen draw logic
-                window.draw(openingButton);window.draw(startText);window.draw(playButtonText);window.draw(pauseHelp);
+                
+
+                ///Startscreen draw logic
+                
+                window.draw(startScreen); window.draw(pauseHelp);
+
+                sf::Vector2i mvec = sf::Mouse::getPosition(window);
+                    if( mvec.x > 435 && mvec.x < 1139){ 
+                        if(mvec.y > 528 && mvec.y < 695) { 
+                            window.draw(highLight);
+                            if (sf::Mouse::isButtonPressed(mouse.Left)) { ///Button 'click' logic
+                                state = GAMEPLAY;
+                            }
+                        }
+                    }
+
+                mouseX.setString(std::to_string(mvec.x));
+                mouseY.setString(std::to_string(mvec.y));
+
+                window.draw(mouseX); window.draw(mouseY);
+
                 window.display();
 
             break; }
@@ -250,33 +280,38 @@ int main(){
                     c->isShooting = true;
                 }
 
-                if (rand() % c->enemySpawnSpeed == 0){ ///Enemy creation logic
-                    BasicChaseEnemy *e = new BasicChaseEnemy();
-                    int randX = rand() % 4800 - 2400; int randY = rand() % 4800 - 2400;
-                    if (randX > 700 || randX < 500){
-                        if(randY > 500 || randY < 300){
-                            e->settings(crystalEnemy, randX, randY, 0);
-                            entities.push_back(e);
-                        } else {
-                            e->isAlive = false;
-                        }
-                    }else {
-                        e->isAlive = false;
-                    }
-                }
+                if (enemyCount <= enemyCap){
 
-                if (rand() % c->enemySpawnSpeed == 0){ ///Ranged Enemy creation logic
-                    BasicRangedEnemy *e = new BasicRangedEnemy();
-                    int randX = rand() % 4800 - 2400; int randY = rand() % 4800 - 2400;
-                    if (randX > 700 || randX < 500){
-                        if(randY > 500 || randY < 300){
-                            e->settings(crystalShootey, randX, randY, 0);
-                            entities.push_back(e);
-                        } else {
+                    if (rand() % c->enemySpawnSpeed == 0){ ///Enemy creation logic
+                        BasicChaseEnemy *e = new BasicChaseEnemy();
+                        int randX = rand() % 4800 - 2400; int randY = rand() % 4800 - 2400;
+                        if (randX > 700 || randX < 500){
+                            if(randY > 500 || randY < 300){
+                                e->settings(crystalEnemy, randX, randY, 0);
+                                entities.push_back(e);
+                                enemyCount += 1;
+                            } else {
+                                e->isAlive = false;
+                            }
+                        }else {
                             e->isAlive = false;
                         }
-                    }else {
-                        e->isAlive = false;
+                    }
+
+                    if (rand() % c->enemySpawnSpeed == 0){ ///Ranged Enemy creation logic
+                        BasicRangedEnemy *e = new BasicRangedEnemy();
+                        int randX = rand() % 4800 - 2400; int randY = rand() % 4800 - 2400;
+                        if (randX > 700 || randX < 500){
+                            if(randY > 500 || randY < 300){
+                                e->settings(crystalShootey, randX, randY, 0);
+                                entities.push_back(e);
+                                enemyCount += 1;
+                            } else {
+                                e->isAlive = false;
+                            }
+                        }else {
+                            e->isAlive = false;
+                        }
                     }
                 }
 
@@ -334,7 +369,9 @@ int main(){
                 for (auto i = entities.begin(); i != entities.end();) { ///Entity update logic
                     Entity *e = *i; //*i is an Entity pointer, using * on an iterator returns the element from the list
                     e->update(); // Uses polymorphism to call the proper update method
-                    if (!e->isAlive) {i = entities.erase(i); delete e;} else i++; //Move iterator to the next element in the list
+                    if (!e->isAlive) {
+                        i = entities.erase(i); if(e->name == "enemy"){ enemyCount -= 1;} delete e; 
+                    } else i++; //Move iterator to the next element in the list
                 }
                 for (auto i:entities) { ///Draw Logic
                     if (i->name == "arrow" || "enemy" || "movingText" || "eproj"){
@@ -353,6 +390,12 @@ int main(){
                 window.draw(attackText); window.draw(dexterityText); window.draw(damageText);
                 window.draw(critChanceText); window.draw(critDamageText);
                 window.draw(waveIndicator);
+
+                sf::Vector2i mvec = sf::Mouse::getPosition(window);
+                mouseX.setString(std::to_string(mvec.x));
+                mouseY.setString(std::to_string(mvec.y));
+
+                window.draw(mouseX); window.draw(mouseY);
 
                 if (showWavePopup){ ///Wave popup logic
                     float waveTime = gameClock.getElapsedTime().asSeconds(); gameClock.restart();
@@ -377,15 +420,24 @@ int main(){
                 while (window.pollEvent(move)) { if (move.type == sf::Event::Closed) {window.close(); } } ///Window close logic
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab)) { state = GAMEPLAY; } ///Back to game logic
 
-                sf::Vector2i mvec = sf::Mouse::getPosition(window);
+                window.draw(upBackground);
 
+                sf::Vector2i mvec = sf::Mouse::getPosition(window);
                 mouseX.setString(std::to_string(mvec.x));
                 mouseY.setString(std::to_string(mvec.y));
 
-
-                window.draw(upBackground);
-
                 window.draw(mouseX); window.draw(mouseY);
+
+                
+
+
+
+
+
+
+                
+
+                
 
                 uppy.setPosition(451, 416); window.draw(uppy);
                 uppy.setPosition(674, 467); window.draw(uppy);
@@ -394,8 +446,6 @@ int main(){
                 uppy.setPosition(1265, 620); window.draw(uppy);
 
                 upgBoard.setPosition(450, 35); window.draw(upgBoard);
-
-                
 
                 goldenEntity->sprite.setPosition(100,100);
                 goldenEntity->draw(window);window.draw(gold);window.draw(pause);
