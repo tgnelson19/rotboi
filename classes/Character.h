@@ -49,7 +49,7 @@ public:
         canShoot = false;
         shot2 = false;
 
-        dexterity = 0;
+        dexterity = 10;
         attack = 0;
         shotSpeed = 10;
         range = 5;

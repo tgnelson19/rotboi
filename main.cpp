@@ -129,6 +129,10 @@ int main(){
     window.setFramerateLimit(60); /// Limits framerate
 
     std::vector<Entity *> entities; ///Entity list to interate through
+    entities.clear();
+    for (auto i:entities) { ///Trying to kill past enemies
+        i->isAlive = false;    
+    }
 
     sf::Mouse mouse; std::vector<float> mousePos = {0, 0}; ///Mouse position
 
@@ -166,8 +170,8 @@ int main(){
     sf::Text dexterityOnBar("DEX", font, 20); dexterityOnBar.setFillColor((sf::Color::Yellow)); dexterityOnBar.setPosition(1370,430);
     sf::Text critChanceOnBar("C.C.", font, 20); critChanceOnBar.setFillColor((sf::Color::Yellow)); critChanceOnBar.setPosition(1225,465);
     sf::Text critDamageOnBar("C.D.", font, 20); critDamageOnBar.setFillColor((sf::Color::Red)); critDamageOnBar.setPosition(1370,465);
-    sf::Text speedOnBar("C.D.", font, 20); speedOnBar.setFillColor((sf::Color::Green)); speedOnBar.setPosition(1225,500);
-    sf::Text vitalityOnBar("C.D.", font, 20); vitalityOnBar.setFillColor((sf::Color::Red)); vitalityOnBar.setPosition(1370,500);
+    sf::Text speedOnBar("SPD", font, 20); speedOnBar.setFillColor((sf::Color::Green)); speedOnBar.setPosition(1225,500);
+    sf::Text vitalityOnBar("VIT", font, 20); vitalityOnBar.setFillColor((sf::Color::Red)); vitalityOnBar.setPosition(1370,500);
 
 
     sf::Text damageText("0", font, 30); damageText.setFillColor((sf::Color::Black)); damageText.setPosition(1340,360);
@@ -296,7 +300,7 @@ int main(){
                     c->isShooting = true;
                 }
 
-                if (enemyCount <= enemyCap){
+                if (enemyCount <= enemyCap && !showWavePopup){
 
                     if (rand() % c->enemySpawnSpeed == 0){ ///Enemy creation logic
                         BasicChaseEnemy *e = new BasicChaseEnemy();
@@ -400,6 +404,7 @@ int main(){
                 attackText.setString(std::to_string(c->attack)); dexterityText.setString(std::to_string(c->dexterity));
                 damageText.setString(std::to_string(c->minDamage) + " - " + std::to_string(c->maxDamage));
                 critChanceText.setString(std::to_string(c->critChance) + "%"); critDamageText.setString("+" + std::to_string(c->critDamage) + "%");
+                speedText.setString(std::to_string(b->speed));
 
                 window.draw(sidebar); window.draw(rightSide);
 
