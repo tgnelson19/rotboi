@@ -16,7 +16,7 @@
 #include "classes/Background.h"
 #include "classes/MovingText.h"
 
-const int enemyCap = 10;
+const int enemyCap = 200;
 
 int enemyCount = 0;
  
@@ -129,8 +129,6 @@ int main(){
 
     rightSide.setScale(0.71, 0.71); rightSide.setPosition(1208, 292); 
 
-    
-
     enum states {STARTSCREEN, GAMEPLAY, PAUSE}; states state = STARTSCREEN; ///Enumerations for game states
 
     sf::RenderWindow window(sf::VideoMode(W, H), "rotboi"); ///Main window initialized
@@ -151,8 +149,6 @@ int main(){
     }
 
     sf::View miniMap; miniMap.setViewport(sf::FloatRect(0.805f, 0.008f, 0.19f, 0.35f)); ///Makes a minimap
-
-     
 
     Background *b = new Background(); /// Background entity
     ///map.scale(60,60);
@@ -177,7 +173,6 @@ int main(){
     sf::Text pause("Unpause with the Tab key", font, 25); pause.setFillColor(sf::Color::Black); pause.setPosition(100, 220);
     sf::Text playButtonText("Play", font, 50); playButtonText.setFillColor(sf::Color::Black); playButtonText.setPosition(700, 475);
 
-
     sf::Text damageOnBar("DMG", font, 30); damageOnBar.setFillColor((sf::Color::Black)); damageOnBar.setPosition(1230,360);
     sf::Text attackOnBar("ATT", font, 20); attackOnBar.setFillColor((sf::Color::Magenta)); attackOnBar.setPosition(1225,430);
     sf::Text dexterityOnBar("DEX", font, 20); dexterityOnBar.setFillColor((sf::Color::Yellow)); dexterityOnBar.setPosition(1370,430);
@@ -185,7 +180,6 @@ int main(){
     sf::Text critDamageOnBar("C.D.", font, 20); critDamageOnBar.setFillColor((sf::Color::Red)); critDamageOnBar.setPosition(1370,465);
     sf::Text speedOnBar("SPD", font, 20); speedOnBar.setFillColor((sf::Color::Green)); speedOnBar.setPosition(1225,500);
     sf::Text vitalityOnBar("VIT", font, 20); vitalityOnBar.setFillColor((sf::Color::Red)); vitalityOnBar.setPosition(1370,500);
-
 
     sf::Text damageText("0", font, 30); damageText.setFillColor((sf::Color::Black)); damageText.setPosition(1340,360);
     sf::Text attackText("0", font, 20); attackText.setFillColor((sf::Color::Magenta)); attackText.setPosition(1270,430);
@@ -195,8 +189,6 @@ int main(){
     sf::Text speedText("0", font, 20); speedText.setFillColor((sf::Color::Green)); speedText.setPosition(1270,500);
     sf::Text vitalityText("0", font, 20); vitalityText.setFillColor((sf::Color::Red)); vitalityText.setPosition(1415,500);
 
-
-
     sf::Text wavePopup("Wave 1", font, 100); wavePopup.setFillColor((sf::Color::Red)); wavePopup.setPosition(475,250);
     sf::Text waveIndicator("Wave 1", font, 25); waveIndicator.setFillColor((sf::Color::Red)); waveIndicator.setPosition(1230,302);
     sf::Text mouseX(" ", font, 25); mouseX.setFillColor((sf::Color::Red)); mouseX.setPosition(10,10);
@@ -204,18 +196,13 @@ int main(){
 
     bool showWavePopup = true; sf::Clock gameClock; float waveTimer; float waveDelay = 3; ///Wave counter data
 
-    
-
     ///Shapes initialized
     sf::RectangleShape sidebar(sf::Vector2f(400.f, 800.f)); sidebar.setPosition(1200,0); sidebar.setFillColor(sf::Color::Black); 
     sf::RectangleShape miniDude(sf::Vector2f(25.f, 25.f)); miniDude.setFillColor(sf::Color::Yellow); miniDude.setPosition(475,475);
 
-
     float mapscale = 1.0/3.0; 
      ///map.scale(mapscale,mapscale); ///Map scaled for the minimap
      bossRoom.scale(mapscale,mapscale);
-
-   
 
     while (window.isOpen()) {
         switch (state){
@@ -223,10 +210,6 @@ int main(){
 
                 sf::Event move{};
                 while (window.pollEvent(move)) { if (move.type == sf::Event::Closed) { window.close(); } } ///Close logic
-
-                
-
-                
 
                 ///Startscreen draw logic
                 
@@ -477,17 +460,6 @@ int main(){
                 mouseY.setString(std::to_string(mvec.y));
 
                 window.draw(mouseX); window.draw(mouseY);
-
-                
-
-
-
-
-
-
-                
-
-                
 
                 uppy.setPosition(451, 416); window.draw(uppy);
                 uppy.setPosition(674, 467); window.draw(uppy);

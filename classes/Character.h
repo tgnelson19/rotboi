@@ -60,7 +60,7 @@ public:
         critChance = 10;
         critDamage = 100;
 
-        enemySpawnSpeed = 50;
+        enemySpawnSpeed = 5;
 
     }
 
