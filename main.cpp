@@ -360,21 +360,6 @@ int main(){
                     }
                 }
 
-                for (auto i = entities.begin(); i != entities.end();) { ///Entity update logic
-                    Entity *e = *i; //*i is an Entity pointer, using * on an iterator returns the element from the list
-                    e->update(); // Uses polymorphism to call the proper update method
-                    if (!e->isAlive) {
-                        i = entities.erase(i); 
-                        if(e->name == "enemy"){
-                             enemyCount -= 1;
-                             }
-                        delete e; 
-                    } else {
-                        i++;
-                    } //Move iterator to the next element in the list
-                }
-
-
                 for (auto p:entities) { 
                     for (auto q:entities) { /// Enemy hit detection logic
                         sf::FloatRect aBox = p->sprite.getGlobalBounds();
@@ -407,6 +392,19 @@ int main(){
 
                 gold.setString(std::to_string(c->goldCount)); /// Sets gold count to gold count
 
+                for (auto i = entities.begin(); i != entities.end();) { ///Entity update logic
+                    Entity *e = *i; //*i is an Entity pointer, using * on an iterator returns the element from the list
+                    e->update(); // Uses polymorphism to call the proper update method
+                    if (!e->isAlive) {
+                        i = entities.erase(i); 
+                        if(e->name == "enemy"){
+                             enemyCount -= 1;
+                        }
+                        delete e; 
+                    } else {
+                        i++;
+                    } //Move iterator to the next element in the list
+                }
                 
                 for (auto i:entities) { ///Draw Logic
                     if (i->name == "arrow" || "enemy" || "movingText" || "eproj"){
