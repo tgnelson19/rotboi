@@ -16,7 +16,7 @@
 #include "classes/Background.h"
 #include "classes/MovingText.h"
 
-const int enemyCap = 200;
+const int enemyCap = 3;
 
 int enemyCount = 0;
  
@@ -121,6 +121,8 @@ int main(){
     sf::Sprite uppy(upArrow), upBackground(upgradeBackground), deadUppy(deadArrow), upgBoard(upgradeBoard), startScreen(stScreen), highLight(bright), rightSide(inv);
     sf::Sprite bossRoom(bosRom);
 
+    arrowSprite.setPosition(1600, 800); crystalEnemy.setPosition(0,0); crystalShootey.setPosition(0,0);
+
     uppy.setScale(0.7, 0.7); startScreen.setScale(5,5);
 
     highLight.setScale(1.2, 1.2);
@@ -137,9 +139,6 @@ int main(){
 
     std::vector<Entity *> entities; ///Entity list to interate through
     entities.clear();
-    for (auto i:entities) { ///Trying to kill past enemies
-        i->isAlive = false;    
-    }
 
     sf::Mouse mouse; std::vector<float> mousePos = {0, 0}; ///Mouse position
 
@@ -303,40 +302,43 @@ int main(){
                     c->isShooting = true;
                 }
 
-                if (enemyCount <= enemyCap && !showWavePopup){
-
+                if (enemyCount <= enemyCap && !showWavePopup ){
                     if (rand() % c->enemySpawnSpeed == 0){ ///Enemy creation logic
-                        BasicChaseEnemy *e = new BasicChaseEnemy();
-                        int randX = rand() % 4800 - 2400; int randY = rand() % 4800 - 2400;
-                        if (randX > 700 || randX < 500){
-                            if(randY > 500 || randY < 300){
-                                e->settings(crystalEnemy, randX, randY, 0);
-                                entities.push_back(e);
-                                enemyCount += 1;
-                            } else {
+                        if(rand() % 1 == 0){
+                            BasicChaseEnemy *e = new BasicChaseEnemy();
+                            int randX = rand() % 4800 - 2400; int randY = rand() % 4800 - 2400;
+                            enemyCount += 1;
+                            if (randX > 700 || randX < 500){
+                                if(randY > 500 || randY < 300){
+                                    e->settings(crystalEnemy, randX, randY, 0);
+                                    
+                                } else {
+                                    e->isAlive = false;
+                                }
+                            }else {
                                 e->isAlive = false;
                             }
-                        }else {
-                            e->isAlive = false;
+                            entities.push_back(e);
+                        } else {
+                            BasicRangedEnemy *e = new BasicRangedEnemy();
+                            int randX = rand() % 4800 - 2400; int randY = rand() % 4800 - 2400;
+                            enemyCount += 1;
+                            if (randX > 700 || randX < 500){
+                                if(randY > 500 || randY < 300){
+                                    e->settings(crystalShootey, randX, randY, 0);
+                                } else {
+                                    e->isAlive = false;
+                                }
+                            }else {
+                                e->isAlive = false;
+                            }
+                            entities.push_back(e);
+                            }   
                         }
+                        
                     }
 
-                    if (rand() % c->enemySpawnSpeed == 0){ ///Ranged Enemy creation logic
-                        BasicRangedEnemy *e = new BasicRangedEnemy();
-                        int randX = rand() % 4800 - 2400; int randY = rand() % 4800 - 2400;
-                        if (randX > 700 || randX < 500){
-                            if(randY > 500 || randY < 300){
-                                e->settings(crystalShootey, randX, randY, 0);
-                                entities.push_back(e);
-                                enemyCount += 1;
-                            } else {
-                                e->isAlive = false;
-                            }
-                        }else {
-                            e->isAlive = false;
-                        }
-                    }
-                }
+                    
 
                 for (auto p:entities) { /// Basic Ranged Enemy Attack Logic
                     if (p->name == "enemy"){
@@ -358,13 +360,29 @@ int main(){
                     }
                 }
 
+                for (auto i = entities.begin(); i != entities.end();) { ///Entity update logic
+                    Entity *e = *i; //*i is an Entity pointer, using * on an iterator returns the element from the list
+                    e->update(); // Uses polymorphism to call the proper update method
+                    if (!e->isAlive) {
+                        i = entities.erase(i); 
+                        if(e->name == "enemy"){
+                             enemyCount -= 1;
+                             }
+                        delete e; 
+                    } else {
+                        i++;
+                    } //Move iterator to the next element in the list
+                }
+
+
                 for (auto p:entities) { 
                     for (auto q:entities) { /// Enemy hit detection logic
-                        if (p->name == "arrow"){
-                            if (q->name == "enemy"){
-                                sf::FloatRect aBox = p->sprite.getGlobalBounds();
-                                sf::FloatRect eBox = q->sprite.getGlobalBounds();
+                        sf::FloatRect aBox = p->sprite.getGlobalBounds();
+                        sf::FloatRect eBox = q->sprite.getGlobalBounds();
+                        if (p->name == "arrow" && p->isAlive){
+                            if (q->name == "enemy" && q->isAlive){
                                 if (aBox.intersects(eBox)){
+                            
                                     int damageNow = rand() % (p->maxDamage-p->minDamage + c->attack) + (p->maxDamage + c->attack);
                                     MovingText *mov = new MovingText();
                                     mov->text.setPosition(q->x + 30, q->y - 10);
@@ -389,13 +407,7 @@ int main(){
 
                 gold.setString(std::to_string(c->goldCount)); /// Sets gold count to gold count
 
-                for (auto i = entities.begin(); i != entities.end();) { ///Entity update logic
-                    Entity *e = *i; //*i is an Entity pointer, using * on an iterator returns the element from the list
-                    e->update(); // Uses polymorphism to call the proper update method
-                    if (!e->isAlive) {
-                        i = entities.erase(i); if(e->name == "enemy"){ enemyCount -= 1;} delete e; 
-                    } else i++; //Move iterator to the next element in the list
-                }
+                
                 for (auto i:entities) { ///Draw Logic
                     if (i->name == "arrow" || "enemy" || "movingText" || "eproj"){
                         i->pDX = b->speed*b->dx; i->pDY = b->speed*b->dy;
