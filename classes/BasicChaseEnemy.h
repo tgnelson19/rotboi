@@ -14,7 +14,8 @@ BasicChaseEnemy(){
     type = "BCE"; 
     speed = 2; 
     health = 1000;
-     maxHealth = 1000;
+    maxHealth = 1000;
+    isAlive =  true;
 }
 
 

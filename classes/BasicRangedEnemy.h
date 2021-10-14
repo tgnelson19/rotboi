@@ -22,6 +22,7 @@ BasicRangedEnemy(){
     speed = 2; 
     health = 500; 
     maxHealth = 500; 
+    isAlive = true;
 
     wantsToAttack = false; 
     sightDistance = 300; 
