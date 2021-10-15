@@ -15,8 +15,10 @@
 #include "classes/EnemyProjectile.h"
 #include "classes/Background.h"
 #include "classes/MovingText.h"
+#include "classes/Item.h"
+#include "classes/Bag.h"
 
-const int enemyCap = 200;
+const int enemyCap = 3;
 
 int enemyCount = 0;
 
@@ -62,7 +64,8 @@ int main(){
     cLNW.setOrigin(75, 0);cLW2.setOrigin(60, 0); cLS1.setOrigin(67.5, 0);cLS2.setOrigin(82.5, 0);
 
     sf::Texture bg, arrowTexture, Inventory, Stats, CrystalBoi, CrystalBluey, GoldTexture, 
-    upgradedBowShot, upArrow, upgradeBackground, deadArrow, upgradeBoard, stScreen, bright, inv, bosRom; /// Other textures initialized
+    upgradedBowShot, upArrow, upgradeBackground, deadArrow, upgradeBoard, stScreen, bright, inv, bosRom,
+    whiteBagTexture, nsfwakitext; /// Other textures initialized
 
     if (!bg.loadFromFile("images/World1.png")) { /// Released for non-commercial use by Oryx
         std::cout << "Error: Failed to load file" << std::endl;
@@ -120,10 +123,18 @@ int main(){
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
+    if (!whiteBagTexture.loadFromFile("images/WhiteBag.png")) { 
+        std::cout << "Error: Failed to load file" << std::endl;
+        return EXIT_FAILURE;
+    }
+    if (!nsfwakitext.loadFromFile("images/nsfwaki.png")) { 
+        std::cout << "Error: Failed to load file" << std::endl;
+        return EXIT_FAILURE;
+    }
 
     sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi), crystalShootey(CrystalBluey), goldIcon(GoldTexture), enemyShot(upgradedBowShot); ///Making basic sprites
     sf::Sprite uppy(upArrow), upBackground(upgradeBackground), deadUppy(deadArrow), upgBoard(upgradeBoard), startScreen(stScreen), highLight(bright), rightSide(inv);
-    sf::Sprite bossRoom(bosRom);
+    sf::Sprite bossRoom(bosRom), whiteBag(whiteBagTexture), nsfWaki(nsfwakitext);
 
     arrowSprite.setPosition(1600, 800); crystalEnemy.setPosition(0,0); crystalShootey.setPosition(0,0);
 
@@ -196,11 +207,16 @@ int main(){
     sf::Text mouseX(" ", font, 25); mouseX.setFillColor((sf::Color::Red)); mouseX.setPosition(10,10);
     sf::Text mouseY(" ", font, 25); mouseY.setFillColor((sf::Color::Red)); mouseY.setPosition(10,40);
 
+    sf::RectangleShape invSlot; invSlot.setSize(sf::Vector2f(50,50)); invSlot.setFillColor(sf::Color::White); invSlot.setPosition(1300, 600);
+
     bool showWavePopup = true; sf::Clock gameClock; float waveTimer; float waveDelay = 3; ///Wave counter data
 
     ///Shapes initialized
     sf::RectangleShape sidebar(sf::Vector2f(400.f, 800.f)); sidebar.setPosition(1200,0); sidebar.setFillColor(sf::Color::Black); 
     sf::RectangleShape miniDude(sf::Vector2f(25.f, 25.f)); miniDude.setFillColor(sf::Color::Yellow); miniDude.setPosition(475,475);
+
+    std::vector <Item*> itemList;
+    std::vector <Bag*> bagList;
 
     float mapscale = 1.0/3.0; 
      ///map.scale(mapscale,mapscale); ///Map scaled for the minimap
@@ -391,6 +407,8 @@ int main(){
                     }
                 }
 
+                
+
                 gold.setString(std::to_string(c->goldCount)); /// Sets gold count to gold count
 
                 for (auto i = entities.begin(); i != entities.end();) { ///Entity update logic
@@ -400,6 +418,13 @@ int main(){
                         i = entities.erase(i); 
                         if(e->name == "enemy"){
                              enemyCount -= 1;
+                             Bag *b = new Bag();
+                             b->settings(whiteBag, e->x, e->y, 0); b->name = "bag";
+                             Item *item = new Item();
+                             item->settings(nsfWaki, invSlot.getPosition().x , invSlot.getPosition().y, 0); item->itemName = "nsfwaki";
+                             itemList.push_back(item); 
+                             b->itemInside = item;
+                             bagList.push_back(b);
                         }
                         delete e; 
                     } else {
@@ -408,11 +433,22 @@ int main(){
                 }
                 
                 for (auto i:entities) { ///Draw Logic
-                    if (i->name == "arrow" || "enemy" || "movingText" || "eproj"){
+                    if (i->name == "arrow" || "enemy" || "movingText" || "eproj" || "bag"){
                         i->pDX = b->speed*b->dx; i->pDY = b->speed*b->dy;
                     }
                     i->draw(window);
                 }
+
+                for (auto bag:bagList){
+                    bag->pDX = b->speed*b->dx; bag->pDY = b->speed*b->dy;
+                    bag->update();
+                    bag->draw(window);
+                    if(bag->sprite.getGlobalBounds().intersects(c->sprite.getGlobalBounds())){
+                        bag->itemInside->isPresented = true;
+                    }
+                }
+
+                
 
                 ///Default UI creation and setup
                 attackText.setString(std::to_string(c->attack)); dexterityText.setString(std::to_string(c->dexterity));
@@ -429,7 +465,22 @@ int main(){
                 window.draw(critChanceText); window.draw(critDamageText);
                 window.draw(speedText); window.draw(speedOnBar);
                 window.draw(vitalityText); window.draw(vitalityOnBar);
-                window.draw(waveIndicator);
+                window.draw(waveIndicator); window.draw(invSlot);
+
+                for(auto item:itemList) {
+                    item->isBeingUsed = false;
+                    if(item->isPresented){
+                        item->draw(window);
+                        if(isClicked(item->sprite.getGlobalBounds(), sf::Vector2f(1,1))){
+                            item->isBeingUsed;
+                            item->x = sf::Mouse::getPosition().x - 20;
+                            item->y = sf::Mouse::getPosition().y - 20;
+                        }
+                    } 
+                    if (!item->isBeingUsed){
+                    item->isPresented = false;
+                    }
+                }
                 
 
                 sf::Vector2i mvec = sf::Mouse::getPosition(window);
