@@ -14,13 +14,42 @@ public:
     std::string itemName;
     bool isPresented;
     bool isBeingUsed;
-    int slotNum;
+    std::string slot;
 
     Item() { 
         isPresented = false;
         isBeingUsed = false;
-        slotNum = -1;
+        slot = "-1";
     } /// Default Constructor
+
+    void update(){
+
+        if (slot == "I1"){
+            x = 1230;
+            y = 620;
+        }
+        if (slot == "I2"){
+            x = 1300;
+            y = 620;
+        }
+        if (slot == "I3"){
+            x = 1360;
+            y = 620;
+        }
+        if (slot == "I4"){
+            x = 1425;
+            y = 620;
+        }
+        if (slot == "G"){
+            x = 1350;
+            y = 670;
+        }
+
+
+
+
+
+    }
 
     
 

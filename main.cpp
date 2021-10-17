@@ -65,7 +65,7 @@ int main(){
 
     sf::Texture bg, arrowTexture, Inventory, Stats, CrystalBoi, CrystalBluey, GoldTexture, 
     upgradedBowShot, upArrow, upgradeBackground, deadArrow, upgradeBoard, stScreen, bright, inv, bosRom,
-    whiteBagTexture, nsfwakitext; /// Other textures initialized
+    whiteBagTexture, nsfwakitext, invBackground, itemOnGroundThingy; /// Other textures initialized
 
     if (!bg.loadFromFile("images/World1.png")) { /// Released for non-commercial use by Oryx
         std::cout << "Error: Failed to load file" << std::endl;
@@ -123,6 +123,14 @@ int main(){
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
     }
+    if (!invBackground.loadFromFile("images/pixil-frame-0 (11).png")) { 
+        std::cout << "Error: Failed to load file" << std::endl;
+        return EXIT_FAILURE;
+    }
+    if (!itemOnGroundThingy.loadFromFile("images/pixil-frame-0 (12).png")) { 
+        std::cout << "Error: Failed to load file" << std::endl;
+        return EXIT_FAILURE;
+    }
     if (!whiteBagTexture.loadFromFile("images/WhiteBag.png")) { 
         std::cout << "Error: Failed to load file" << std::endl;
         return EXIT_FAILURE;
@@ -134,9 +142,11 @@ int main(){
 
     sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi), crystalShootey(CrystalBluey), goldIcon(GoldTexture), enemyShot(upgradedBowShot); ///Making basic sprites
     sf::Sprite uppy(upArrow), upBackground(upgradeBackground), deadUppy(deadArrow), upgBoard(upgradeBoard), startScreen(stScreen), highLight(bright), rightSide(inv);
-    sf::Sprite bossRoom(bosRom), whiteBag(whiteBagTexture), nsfWaki(nsfwakitext);
+    sf::Sprite bossRoom(bosRom), whiteBag(whiteBagTexture), nsfWaki(nsfwakitext), inventoryBackground(invBackground), itemDropBG(itemOnGroundThingy);
 
     arrowSprite.setPosition(1600, 800); crystalEnemy.setPosition(0,0); crystalShootey.setPosition(0,0);
+    inventoryBackground.setPosition(1220, 550); inventoryBackground.setScale(sf::Vector2f(2,2));
+    itemDropBG.setPosition(1250, 670); itemDropBG.setScale(sf::Vector2f(2,2));
 
     uppy.setScale(0.7, 0.7); startScreen.setScale(5,5);
 
@@ -206,8 +216,6 @@ int main(){
     sf::Text waveIndicator("Wave 1", font, 25); waveIndicator.setFillColor((sf::Color::Red)); waveIndicator.setPosition(1230,302);
     sf::Text mouseX(" ", font, 25); mouseX.setFillColor((sf::Color::Red)); mouseX.setPosition(10,10);
     sf::Text mouseY(" ", font, 25); mouseY.setFillColor((sf::Color::Red)); mouseY.setPosition(10,40);
-
-    sf::RectangleShape invSlot; invSlot.setSize(sf::Vector2f(50,50)); invSlot.setFillColor(sf::Color::White); invSlot.setPosition(1300, 600);
 
     bool showWavePopup = true; sf::Clock gameClock; float waveTimer; float waveDelay = 3; ///Wave counter data
 
@@ -421,7 +429,7 @@ int main(){
                              Bag *b = new Bag();
                              b->settings(whiteBag, e->x, e->y, 0); b->name = "bag";
                              Item *item = new Item();
-                             item->settings(nsfWaki, invSlot.getPosition().x , invSlot.getPosition().y, 0); item->itemName = "nsfwaki";
+                             item->settings(nsfWaki, 1330, 710, 0); item->itemName = "nsfwaki";
                              itemList.push_back(item); 
                              b->itemInside = item;
                              bagList.push_back(b);
@@ -465,16 +473,18 @@ int main(){
                 window.draw(critChanceText); window.draw(critDamageText);
                 window.draw(speedText); window.draw(speedOnBar);
                 window.draw(vitalityText); window.draw(vitalityOnBar);
-                window.draw(waveIndicator); window.draw(invSlot);
+                window.draw(waveIndicator); window.draw(inventoryBackground);
 
                 for(auto item:itemList) {
+                    
                     item->isBeingUsed = false;
                     if(item->isPresented){
+                        window.draw(itemDropBG);
                         item->draw(window);
-                        if(isClicked(item->sprite.getGlobalBounds(), sf::Vector2f(1,1))){
-                            item->isBeingUsed;
-                            item->x = sf::Mouse::getPosition().x - 20;
-                            item->y = sf::Mouse::getPosition().y - 20;
+                        if(item->sprite.getGlobalBounds().contains(sf::Vector2f(mousePos.at(0), mousePos.at(1)))){
+                            
+                            sf::RectangleShape HI; HI.setPosition(500,500); HI.setFillColor(sf::Color::Black); HI.setSize(sf::Vector2f(800,800));
+                            window.draw(HI);
                         }
                     } 
                     if (!item->isBeingUsed){
