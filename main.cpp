@@ -272,7 +272,8 @@ int main(){
                              Bag *b = new Bag();
                              b->settings(whiteBag, e->x, e->y, 0); b->name = "bag";
                              Item *item = new Item();
-                             item->settings(nsfWaki, 1330, 710, 0); item->itemName = "nsfwaki"; item->slot = "G";
+                             item->settings(nsfWaki, 1330, 710, 0); 
+                             item->itemName = "nsfwaki"; item->slot = "G"; item->itemType = "Ab";
                              itemList.push_back(item); 
                              b->itemInside = item;
                              bagList.push_back(b);
@@ -335,6 +336,18 @@ int main(){
                                     if(item->sprite.getGlobalBounds().contains(1445, 640)){
                                         item->slot = "I4"; item->isInInv = true; 
                                     }
+                                    if(item->sprite.getGlobalBounds().contains(1250, 575) && item->itemType == "W"){
+                                        item->slot = "W"; item->isInInv = true; 
+                                    }
+                                    if(item->sprite.getGlobalBounds().contains(1315, 575)  && item->itemType == "Ab"){
+                                        item->slot = "Ab"; item->isInInv = true; 
+                                    }
+                                    if(item->sprite.getGlobalBounds().contains(1385, 575)  && item->itemType == "Ar"){
+                                        item->slot = "Ar"; item->isInInv = true; 
+                                    }
+                                    if(item->sprite.getGlobalBounds().contains(1450, 575)  && item->itemType == "R"){
+                                        item->slot = "R"; item->isInInv = true; 
+                                    }
                                     anItemIsInUse = false; item->update();
                                 }
                             }
@@ -359,6 +372,18 @@ int main(){
                                 }
                                 if(item->sprite.getGlobalBounds().contains(1445, 640)){
                                     item->slot = "I4"; 
+                                }
+                                if(item->sprite.getGlobalBounds().contains(1250, 575) && item->itemType == "W"){
+                                    item->slot = "W"; item->isInInv = true; 
+                                }
+                                if(item->sprite.getGlobalBounds().contains(1315, 575)  && item->itemType == "Ab"){
+                                    item->slot = "Ab"; item->isInInv = true; 
+                                }
+                                if(item->sprite.getGlobalBounds().contains(1385, 575)  && item->itemType == "Ar"){
+                                    item->slot = "Ar"; item->isInInv = true; 
+                                }
+                                if(item->sprite.getGlobalBounds().contains(1450, 575)  && item->itemType == "R"){
+                                    item->slot = "R"; item->isInInv = true; 
                                 }
                                 item->isInInv = true; item->update(); anItemIsInUse = false;
                             }

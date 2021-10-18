@@ -12,6 +12,7 @@ class Item : public Entity {
 public:
     
     std::string itemName;
+    std::string itemType;
     bool isPresented;
     bool isBeingUsed;
     bool isInInv;
@@ -46,6 +47,23 @@ public:
             x = 1330;
             y = 715;
         }
+        if (slot == "W"){
+            x = 1230;
+            y = 555;
+        }
+        if (slot == "Ab"){
+            x = 1295;
+            y = 555;
+        }
+        if (slot == "Ar"){
+            x = 1365;
+            y = 555;
+        }
+        if (slot == "R"){
+            x = 1430;
+            y = 555;
+        }
+
 
 
 
