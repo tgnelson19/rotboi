@@ -22,9 +22,9 @@ const int enemyCap = 3;
 
 int enemyCount = 0;
 
-bool isClicked(sf::FloatRect f, sf::Vector2f scale);
+bool isClicked(sf::FloatRect f, sf::RenderWindow &window);
 
-bool isHoveredOver(sf::FloatRect f, sf::Vector2f scale);
+bool isHoveredOver(sf::FloatRect f, sf::RenderWindow &window);
 
 void hitBoxChecker(std::vector<Entity *> &entities, Character *&c, sf::Font &font);
 
@@ -167,8 +167,8 @@ int main(){
                 window.draw(startScreen); window.draw(pauseHelp);
 
                 ///Functions that are supposed to detect if the player clicks the button, but currently I need to work on it more cause it sucks
-                if (isHoveredOver(highLight.getGlobalBounds(), highLight.getScale())){window.draw(highLight);}
-                if (isClicked(highLight.getGlobalBounds(), highLight.getScale())){state = GAMEPLAY;}
+                if (isHoveredOver(highLight.getGlobalBounds(), window)){window.draw(highLight);}
+                if (isClicked(highLight.getGlobalBounds(), window)){state = GAMEPLAY;}
 
                 ///Helps me see the mouses location for when I want to test things
                 sf::Vector2i mvec = sf::Mouse::getPosition(window);
@@ -364,10 +364,10 @@ int main(){
 }
 
 ///Checks to see if a hitbox is clicked
-bool isClicked(sf::FloatRect f, sf::Vector2f scale){
+bool isClicked(sf::FloatRect f, sf::RenderWindow &window){
     if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-        sf::Vector2i m = sf::Mouse::getPosition();
-        if ((m.x /scale.x > f.left) && (m.x /scale.x < f.left + f.width) && (m.y /scale.y > f.top) && (m.y/scale.y < f.top + f.height)){
+        sf::Vector2i m = sf::Mouse::getPosition(window);
+        if ((m.x  > f.left) && (m.x  < f.left + f.width) && (m.y  > f.top) && (m.y < f.top + f.height)){
             return true;
         } else {
             return false;
@@ -376,9 +376,9 @@ bool isClicked(sf::FloatRect f, sf::Vector2f scale){
 }
 
 ///Checks to see if a hitbox is hovered over
-bool isHoveredOver(sf::FloatRect f, sf::Vector2f scale){
-        sf::Vector2i m = sf::Mouse::getPosition();
-        if ((m.x /scale.x > f.left) && (m.x /scale.x < f.left + f.width) && (m.y /scale.y > f.top) && (m.y/scale.y < f.top + f.height)){
+bool isHoveredOver(sf::FloatRect f, sf::RenderWindow &window){
+        sf::Vector2i m = sf::Mouse::getPosition(window);
+        if ((m.x  > f.left) && (m.x  < f.left + f.width) && (m.y > f.top) && (m.y < f.top + f.height)){
             return true;
         } else {
             return false;
