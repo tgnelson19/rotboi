@@ -268,7 +268,7 @@ int main(){
                              Bag *b = new Bag();
                              b->settings(whiteBag, e->x, e->y, 0); b->name = "bag";
                              Item *item = new Item();
-                             item->settings(nsfWaki, 1330, 710, 0); item->itemName = "nsfwaki";
+                             item->settings(nsfWaki, 1330, 710, 0); item->itemName = "nsfwaki"; item->slot = "G";
                              itemList.push_back(item); 
                              b->itemInside = item;
                              bagList.push_back(b);
@@ -286,12 +286,19 @@ int main(){
                     i->draw(window);
                 }
 
-                for (auto bag:bagList){
+                for (auto bager = bagList.begin(); bager != bagList.end();){
+                    Bag *bag = *bager;
                     bag->pDX = b->speed*b->dx; bag->pDY = b->speed*b->dy;
                     bag->update();
                     bag->draw(window);
                     if(bag->sprite.getGlobalBounds().intersects(c->sprite.getGlobalBounds())){
                         bag->itemInside->isPresented = true;
+                    }
+                    if(bag->itemInside->isInInv){
+                        bager = bagList.erase(bager);
+                        delete bag;
+                    } else {
+                        bager++;
                     }
                 }
 
@@ -301,13 +308,57 @@ int main(){
 
                 ///Determines which items to display
                 for(auto item:itemList) {
-                    item->isBeingUsed = false;
-                    if(item->isPresented){ window.draw(itemDropBG); item->draw(window);} 
-                    if (!item->isBeingUsed){ item->isPresented = false;}
+                    if(item->slot == "G"){
+                        item->isBeingUsed = false;
+                        if(item->isPresented){ 
+                            window.draw(itemDropBG);
+                            item->draw(window);
+                            if(isClicked(item->sprite.getGlobalBounds(), window)){
+                                item->x = sf::Mouse::getPosition(window).x - 20;
+                                item->y = sf::Mouse::getPosition(window).y - 20;
+                                item->isBeingUsed = true;
+                            } else {
+                                if(item->sprite.getGlobalBounds().contains(1250, 640)){
+                                    item->slot = "I1"; item->isInInv = true; item->update();
+                                }
+                                if(item->sprite.getGlobalBounds().contains(1320, 640)){
+                                    item->slot = "I2"; item->isInInv = true; item->update();
+                                }
+                                if(item->sprite.getGlobalBounds().contains(1380, 640)){
+                                    item->slot = "I3"; item->isInInv = true; item->update(); 
+                                }
+                                if(item->sprite.getGlobalBounds().contains(1445, 640)){
+                                    item->slot = "I4"; item->isInInv = true; item->update();
+                                }
+                            }
+                        } 
+                        if (!item->isBeingUsed){ item->isPresented = false;} else {item->isPresented = true;}
+                    } else {
+                        item->draw(window);
+                        if(isClicked(item->sprite.getGlobalBounds(), window)){
+                                item->x = sf::Mouse::getPosition(window).x - 20;
+                                item->y = sf::Mouse::getPosition(window).y - 20;
+                                item->isBeingUsed = true;
+                        } else {
+                            if(item->sprite.getGlobalBounds().contains(1250, 640)){
+                                item->slot = "I1"; item->isInInv = true; item->update();
+                            }
+                            if(item->sprite.getGlobalBounds().contains(1320, 640)){
+                                item->slot = "I2"; item->isInInv = true; item->update();
+                            }
+                            if(item->sprite.getGlobalBounds().contains(1380, 640)){
+                                item->slot = "I3"; item->isInInv = true; item->update();
+                            }
+                            if(item->sprite.getGlobalBounds().contains(1445, 640)){
+                                item->slot = "I4"; item->isInInv = true; item->update();
+                            }
+                        }
+                    }
+                    
                 }
 
                 ///Helps me see mouse position, useful for checking things
-                sf::Vector2i mvec = mouse.getPosition();
+                sf::Vector2i mvec = mouse.getPosition(window);
                 mouseX.setString(std::to_string(mvec.x));
                 mouseY.setString(std::to_string(mvec.y));
                 window.draw(mouseX); window.draw(mouseY);

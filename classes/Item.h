@@ -14,11 +14,13 @@ public:
     std::string itemName;
     bool isPresented;
     bool isBeingUsed;
+    bool isInInv;
     std::string slot;
 
     Item() { 
         isPresented = false;
         isBeingUsed = false;
+        isInInv = false;
         slot = "-1";
     } /// Default Constructor
 
@@ -41,8 +43,8 @@ public:
             y = 620;
         }
         if (slot == "G"){
-            x = 1350;
-            y = 670;
+            x = 1330;
+            y = 715;
         }
 
 
