@@ -16,6 +16,8 @@
 #include "classes/Background.h"
 #include "classes/MovingText.h"
 #include "classes/Item.h"
+#include "classes/Ability.h"
+#include "classes/Weapon.h"
 #include "classes/Bag.h"
 
 const int enemyCap = 3;
@@ -65,7 +67,8 @@ int main(){
     ///Initializing other textures
     sf::Texture bg, arrowTexture, Inventory, Stats, CrystalBoi, CrystalBluey, GoldTexture, 
     upgradedBowShot, upArrow, upgradeBackground, deadArrow, upgradeBoard, stScreen, bright, inv, bosRom,
-    whiteBagTexture, nsfwakitext, invBackground, itemOnGroundThingy; 
+    whiteBagTexture, nsfwakitext, invBackground, itemOnGroundThingy, itemToolTipText, grimsbaneText,
+    grimsbaneProjText;
 
     if (!bg.loadFromFile("images/World1.png")) { std::cout << "Error: Failed to load file" << std::endl; return EXIT_FAILURE;}/// Released for non-commercial use by Oryx
     if (!arrowTexture.loadFromFile("images/Arrow.png")) {  std::cout << "Error: Failed to load file" << std::endl;  return EXIT_FAILURE;}/// Released for non-commercial use by Oryx
@@ -85,11 +88,15 @@ int main(){
     if (!itemOnGroundThingy.loadFromFile("images/pixil-frame-0 (12).png")) {  std::cout << "Error: Failed to load file" << std::endl; return EXIT_FAILURE;}
     if (!whiteBagTexture.loadFromFile("images/WhiteBag.png")) { std::cout << "Error: Failed to load file" << std::endl;return EXIT_FAILURE;}
     if (!nsfwakitext.loadFromFile("images/nsfwaki.png")) { std::cout << "Error: Failed to load file" << std::endl;return EXIT_FAILURE;}
+    if (!itemToolTipText.loadFromFile("images/pixil-frame-0 (13).png")) { std::cout << "Error: Failed to load file" << std::endl;return EXIT_FAILURE;}
+    if (!grimsbaneText.loadFromFile("images/Grimsbane.png")) { std::cout << "Error: Failed to load file" << std::endl;return EXIT_FAILURE;}
+    if (!grimsbaneProjText.loadFromFile("images/Grimsbane_Projectile.png")) { std::cout << "Error: Failed to load file" << std::endl;return EXIT_FAILURE;}
 
     ///Initializing sprites
     sf::Sprite map(bg), arrowSprite(arrowTexture), crystalEnemy(CrystalBoi), crystalShootey(CrystalBluey), goldIcon(GoldTexture), enemyShot(upgradedBowShot),
     uppy(upArrow), upBackground(upgradeBackground), deadUppy(deadArrow), upgBoard(upgradeBoard), startScreen(stScreen), highLight(bright), rightSide(inv),
-    bossRoom(bosRom), whiteBag(whiteBagTexture), nsfWaki(nsfwakitext), inventoryBackground(invBackground), itemDropBG(itemOnGroundThingy); 
+    bossRoom(bosRom), whiteBag(whiteBagTexture), nsfWaki(nsfwakitext), inventoryBackground(invBackground), itemDropBG(itemOnGroundThingy),
+    itemToolTipSprite(itemToolTipText), grimsbane(grimsbaneText), grimsbaneProj(grimsbaneProjText); 
 
     ///Making adjustments
     arrowSprite.setPosition(1600, 800); crystalEnemy.setPosition(0,0); crystalShootey.setPosition(0,0);
@@ -98,6 +105,7 @@ int main(){
     uppy.setScale(0.7, 0.7); startScreen.setScale(5,5);
     highLight.setScale(1.2, 1.2); highLight.setPosition(335, 520);
     rightSide.setScale(0.71, 0.71); rightSide.setPosition(1208, 292); 
+    itemToolTipSprite.setScale(2,2); grimsbane.setScale(0.3, 0.3);
 
     enum states {STARTSCREEN, GAMEPLAY, PAUSE}; states state = STARTSCREEN; ///Enumerations for game states
 
@@ -195,7 +203,7 @@ int main(){
 
                 characterWalkLogic(b, c); ///Walk logic
 
-                characterShootLogic(entities, window, c, arrowSprite, mousePos); ///Shooting logic
+                characterShootLogic(entities, window, c, grimsbaneProj, mousePos); ///Shooting logic
 
                 ///Character sprite animation logic
                 if (c->isShooting){ 
@@ -271,9 +279,9 @@ int main(){
                              enemyCount -= 1;
                              Bag *b = new Bag();
                              b->settings(whiteBag, e->x, e->y, 0); b->name = "bag";
-                             Item *item = new Item();
-                             item->settings(nsfWaki, 1330, 710, 0); 
-                             item->itemName = "nsfwaki"; item->slot = "G"; item->itemType = "Ab";
+                             Weapon *item = new Weapon();
+                             item->settings(grimsbane, 1330, 710, 0); 
+                             item->itemName = "Grimsbane"; item->slot = "G"; item->itemType = "W"; item->iP.sprite = itemToolTipSprite; item->newDetails();
                              itemList.push_back(item); 
                              b->itemInside = item;
                              bagList.push_back(b);
@@ -324,30 +332,14 @@ int main(){
                                     item->y = sf::Mouse::getPosition(window).y - 20;
                                     item->isBeingUsed = true; itemInUse = item; anItemIsInUse = true;
                                 } else {
-                                    if(item->sprite.getGlobalBounds().contains(1250, 640)){
-                                        item->slot = "I1"; item->isInInv = true; 
-                                    }
-                                    if(item->sprite.getGlobalBounds().contains(1320, 640)){
-                                        item->slot = "I2"; item->isInInv = true; 
-                                    }
-                                    if(item->sprite.getGlobalBounds().contains(1380, 640)){
-                                        item->slot = "I3"; item->isInInv = true; 
-                                    }
-                                    if(item->sprite.getGlobalBounds().contains(1445, 640)){
-                                        item->slot = "I4"; item->isInInv = true; 
-                                    }
-                                    if(item->sprite.getGlobalBounds().contains(1250, 575) && item->itemType == "W"){
-                                        item->slot = "W"; item->isInInv = true; 
-                                    }
-                                    if(item->sprite.getGlobalBounds().contains(1315, 575)  && item->itemType == "Ab"){
-                                        item->slot = "Ab"; item->isInInv = true; 
-                                    }
-                                    if(item->sprite.getGlobalBounds().contains(1385, 575)  && item->itemType == "Ar"){
-                                        item->slot = "Ar"; item->isInInv = true; 
-                                    }
-                                    if(item->sprite.getGlobalBounds().contains(1450, 575)  && item->itemType == "R"){
-                                        item->slot = "R"; item->isInInv = true; 
-                                    }
+                                    if(item->sprite.getGlobalBounds().contains(1250, 640)){item->slot = "I1"; item->isInInv = true; }
+                                    if(item->sprite.getGlobalBounds().contains(1320, 640)){item->slot = "I2"; item->isInInv = true; }
+                                    if(item->sprite.getGlobalBounds().contains(1380, 640)){item->slot = "I3"; item->isInInv = true; }
+                                    if(item->sprite.getGlobalBounds().contains(1445, 640)){item->slot = "I4"; item->isInInv = true; }
+                                    if(item->sprite.getGlobalBounds().contains(1250, 575) && item->itemType == "W"){item->slot = "W"; item->isInInv = true; }
+                                    if(item->sprite.getGlobalBounds().contains(1315, 575) && item->itemType == "Ab"){item->slot = "Ab"; item->isInInv = true; }
+                                    if(item->sprite.getGlobalBounds().contains(1385, 575) && item->itemType == "Ar"){item->slot = "Ar"; item->isInInv = true; }
+                                    if(item->sprite.getGlobalBounds().contains(1450, 575) && item->itemType == "R"){item->slot = "R"; item->isInInv = true; }
                                     anItemIsInUse = false; item->update();
                                 }
                             }
@@ -357,39 +349,27 @@ int main(){
                         item->draw(window);
                         if(item == itemInUse || anItemIsInUse == false){
                             if(isClicked(item->sprite.getGlobalBounds(), window)){
-                                    item->x = sf::Mouse::getPosition(window).x - 20;
-                                    item->y = sf::Mouse::getPosition(window).y - 20;
-                                    item->isBeingUsed = true; itemInUse = item; anItemIsInUse = true;
+                                item->x = sf::Mouse::getPosition(window).x - 20;
+                                item->y = sf::Mouse::getPosition(window).y - 20;
+                                item->isBeingUsed = true; itemInUse = item; anItemIsInUse = true;
                             } else {
-                                if(item->sprite.getGlobalBounds().contains(1250, 640)){
-                                    item->slot = "I1"; 
-                                }
-                                if(item->sprite.getGlobalBounds().contains(1320, 640)){
-                                    item->slot = "I2"; 
-                                }
-                                if(item->sprite.getGlobalBounds().contains(1380, 640)){
-                                    item->slot = "I3"; 
-                                }
-                                if(item->sprite.getGlobalBounds().contains(1445, 640)){
-                                    item->slot = "I4"; 
-                                }
-                                if(item->sprite.getGlobalBounds().contains(1250, 575) && item->itemType == "W"){
-                                    item->slot = "W"; item->isInInv = true; 
-                                }
-                                if(item->sprite.getGlobalBounds().contains(1315, 575)  && item->itemType == "Ab"){
-                                    item->slot = "Ab"; item->isInInv = true; 
-                                }
-                                if(item->sprite.getGlobalBounds().contains(1385, 575)  && item->itemType == "Ar"){
-                                    item->slot = "Ar"; item->isInInv = true; 
-                                }
-                                if(item->sprite.getGlobalBounds().contains(1450, 575)  && item->itemType == "R"){
-                                    item->slot = "R"; item->isInInv = true; 
-                                }
+                                if(item->sprite.getGlobalBounds().contains(1250, 640)){item->slot = "I1"; }
+                                if(item->sprite.getGlobalBounds().contains(1320, 640)){item->slot = "I2"; }
+                                if(item->sprite.getGlobalBounds().contains(1380, 640)){item->slot = "I3"; }
+                                if(item->sprite.getGlobalBounds().contains(1445, 640)){item->slot = "I4"; }
+                                if(item->sprite.getGlobalBounds().contains(1250, 575) && item->itemType == "W"){item->slot = "W"; }
+                                if(item->sprite.getGlobalBounds().contains(1315, 575)  && item->itemType == "Ab"){item->slot = "Ab";  }
+                                if(item->sprite.getGlobalBounds().contains(1385, 575)  && item->itemType == "Ar"){item->slot = "Ar";  }
+                                if(item->sprite.getGlobalBounds().contains(1450, 575)  && item->itemType == "R"){item->slot = "R"; }
                                 item->isInInv = true; item->update(); anItemIsInUse = false;
                             }
                         }
                     }
                     
+
+                    if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && isHoveredOver(item->sprite.getGlobalBounds(), window)){
+                        item->showTooltip(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y, window, font);
+                    }
                 }
 
                 ///Helps me see mouse position, useful for checking things
@@ -540,22 +520,24 @@ void drawTheRest(sf::RenderWindow &window, Character *&c, sf::Font &font, Backgr
 ///Character shooting logic
 void characterShootLogic(std::vector<Entity *> &entities, sf::RenderWindow &window, Character *&c, sf::Sprite &arrowSprite, std::vector<float> &mousePos){
     c->isShooting = false; ///Prevents user from infinitely shooting the weapon
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)){ 
-    c->isShooting = true;
-        if (c->canShoot){
-            Arrow *a = new Arrow();
-            a->shotSpeed = c->shotSpeed; a->minDamage = c->minDamage;a->maxDamage = c->maxDamage; a->range = c->range;
-            sf::Vector2i mvec = sf::Mouse::getPosition(window); ///Mouse position in vector form
-            mousePos.at(0) = mvec.x - (0.4*window.getSize().x); mousePos.at(1) = mvec.y - (0.46875*window.getSize().y) - 25;///Mouse position relative to the character
-            if (mousePos.at(0) < 0) { ///If x is negative
-                arrowSprite.setScale(-0.2, -0.2); ///Flop the arrow on x and y axis
-                a->backwards = true;
-                a->settings(arrowSprite, 610, 425, (atan(mousePos.at(1) / mousePos.at(0)) * 57.29));
-            } else { ///Otherwise just shoot it normally
-                arrowSprite.setScale(0.2, 0.2);
-                a->settings(arrowSprite, 620, 400, (atan(mousePos.at(1) / mousePos.at(0)) * 57.29));
+    sf::Vector2i mvec = sf::Mouse::getPosition(window); ///Mouse position in vector form
+    if (mvec.x > 0 && mvec.x < 1200 && mvec.y > 0 && mvec.y < 800){
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)){ 
+        c->isShooting = true;
+            if (c->canShoot){
+                Arrow *a = new Arrow();
+                a->shotSpeed = c->shotSpeed; a->minDamage = c->minDamage;a->maxDamage = c->maxDamage; a->range = c->range;
+                mousePos.at(0) = mvec.x - (0.4*window.getSize().x); mousePos.at(1) = mvec.y - (0.46875*window.getSize().y) - 25;///Mouse position relative to the character
+                if (mousePos.at(0) < 0) { ///If x is negative
+                    arrowSprite.setScale(-0.2, -0.2); ///Flop the arrow on x and y axis
+                    a->backwards = true;
+                    a->settings(arrowSprite, 610, 425, (atan(mousePos.at(1) / mousePos.at(0)) * 57.29));
+                } else { ///Otherwise just shoot it normally
+                    arrowSprite.setScale(0.2, 0.2);
+                    a->settings(arrowSprite, 620, 400, (atan(mousePos.at(1) / mousePos.at(0)) * 57.29));
+                }
+                entities.push_back(a); c->canShoot = false; c->shotTimer = 0; c->shot2 = true; ///Add it to the entity list
             }
-            entities.push_back(a); c->canShoot = false; c->shotTimer = 0; c->shot2 = true; ///Add it to the entity list
         }
     }
 }
